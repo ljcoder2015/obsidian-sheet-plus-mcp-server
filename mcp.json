@@ -1,21 +1,21 @@
 {
   "mcpServers": {
-    "obsidian-mcp-server-stdio": {
+    "obsidian-sheet-plus-mcp-server-stdio": {
       "command": "npx",
-      "args": ["obsidian-mcp-server"],
+      "args": ["obsidian-sheet-plus-mcp-server"],
       "env": {
-        "OBSIDIAN_API_KEY": "YOUR_OBSIDIAN_API_KEY_HERE",
-        "OBSIDIAN_BASE_URL": "http://127.0.0.1:27123",
+        "OBSIDIAN_SHEET_PLUS_API_KEY": "qddy8xj4fzcy9usxykf27m",
+        "OBSIDIAN_SHEET_PLUS_BASE_URL": "http://127.0.0.1:3000",
         "MCP_TRANSPORT_TYPE": "stdio",
         "MCP_LOG_LEVEL": "debug"
       }
     },
-    "obsidian-mcp-server-http": {
+    "obsidian-sheet-plus-mcp-server-http": {
       "command": "npx",
-      "args": ["obsidian-mcp-server"],
+      "args": ["obsidian-sheet-plus-mcp-server"],
       "env": {
-        "OBSIDIAN_API_KEY": "YOUR_OBSIDIAN_API_KEY_HERE",
-        "OBSIDIAN_BASE_URL": "http://127.0.0.1:27123",
+        "OBSIDIAN_SHEET_PLUS_API_KEY": "qddy8xj4fzcy9usxykf27m",
+        "OBSIDIAN_SHEET_PLUS_BASE_URL": "http://127.0.0.1:3000",
         "MCP_TRANSPORT_TYPE": "http",
         "MCP_HTTP_PORT": "3010",
         "MCP_HTTP_HOST": "127.0.0.1",

@@ -83,27 +83,13 @@ const EnvSchema = z.object({
   OAUTH_ISSUER_URL: z.string().url().optional(),
   OAUTH_AUDIENCE: z.string().optional(),
   OAUTH_JWKS_URI: z.string().url().optional(),
-  // --- Obsidian Specific Config ---
-  OBSIDIAN_API_KEY: z.string().min(1, "OBSIDIAN_API_KEY cannot be empty"),
-  OBSIDIAN_BASE_URL: z.string().url().default("http://127.0.0.1:27123"),
-  OBSIDIAN_VERIFY_SSL: z
+  // --- Obsidian Sheet Plus Specific Config ---
+  OBSIDIAN_SHEET_PLUS_API_KEY: z.string().min(1, "OBSIDIAN_SHEET_PLUS_API_KEY cannot be empty"),
+  OBSIDIAN_SHEET_PLUS_BASE_URL: z.string().url().default("http://127.0.0.1:27123"),
+  OBSIDIAN_SHEET_PLUS_VERIFY_SSL: z
     .string()
     .transform((val) => val.toLowerCase() === "true")
     .default("false"),
-  OBSIDIAN_CACHE_REFRESH_INTERVAL_MIN: z.coerce
-    .number()
-    .int()
-    .positive()
-    .default(10),
-  OBSIDIAN_ENABLE_CACHE: z
-    .string()
-    .transform((val) => val.toLowerCase() === "true")
-    .default("true"),
-  OBSIDIAN_API_SEARCH_TIMEOUT_MS: z.coerce
-    .number()
-    .int()
-    .positive()
-    .default(30000),
 });
 
 const parsedEnv = EnvSchema.safeParse(process.env);
@@ -208,12 +194,10 @@ export const config = {
   oauthIssuerUrl: env.OAUTH_ISSUER_URL,
   oauthAudience: env.OAUTH_AUDIENCE,
   oauthJwksUri: env.OAUTH_JWKS_URI,
-  obsidianApiKey: env.OBSIDIAN_API_KEY,
-  obsidianBaseUrl: env.OBSIDIAN_BASE_URL,
-  obsidianVerifySsl: env.OBSIDIAN_VERIFY_SSL,
-  obsidianCacheRefreshIntervalMin: env.OBSIDIAN_CACHE_REFRESH_INTERVAL_MIN,
-  obsidianEnableCache: env.OBSIDIAN_ENABLE_CACHE,
-  obsidianApiSearchTimeoutMs: env.OBSIDIAN_API_SEARCH_TIMEOUT_MS,
+  // Obsidian Sheet Plus Config
+  obsidianSheetPlusApiKey: env.OBSIDIAN_SHEET_PLUS_API_KEY,
+  obsidianSheetPlusBaseUrl: env.OBSIDIAN_SHEET_PLUS_BASE_URL,
+  obsidianSheetPlusVerifySsl: env.OBSIDIAN_SHEET_PLUS_VERIFY_SSL,
 };
 
 /**

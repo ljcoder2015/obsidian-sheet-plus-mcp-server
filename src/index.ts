@@ -8,8 +8,7 @@ import { initializeAndStartServer } from "./mcp-server/server.js";
 import { requestContextService, retryWithDelay } from "./utils/index.js";
 import { logger, McpLogLevel } from "./utils/internal/logger.js"; // Import logger instance early
 // Import Services
-import { ObsidianRestApiService } from "./services/obsidianRestAPI/index.js";
-import { VaultCacheService } from "./services/obsidianRestAPI/vaultCache/index.js"; // Import VaultCacheService
+import { ObsidianSheetPlusRestApiService } from "./services/obsidianSheetPlusRestAPI/index.js";
 
 /**
  * The main MCP server instance (only stored globally for stdio shutdown).
@@ -22,15 +21,10 @@ let server: McpServer | undefined;
  */
 let httpServerInstance: ServerType | undefined;
 /**
- * Shared Obsidian REST API service instance.
- * @type {ObsidianRestApiService | undefined}
+ * Shared Obsidian Sheet Plus REST API service instance.
+ * @type {ObsidianSheetPlusRestApiService | undefined}
  */
-let obsidianService: ObsidianRestApiService | undefined;
-/**
- * Shared Vault Cache service instance.
- * @type {VaultCacheService | undefined}
- */
-let vaultCacheService: VaultCacheService | undefined;
+let obsidianSheetPlusService: ObsidianSheetPlusRestApiService | undefined;
 
 /**
  * Gracefully shuts down the main MCP server.
@@ -51,10 +45,6 @@ const shutdown = async (signal: string) => {
   );
 
   try {
-    // Stop cache refresh timer first
-    if (config.obsidianEnableCache && vaultCacheService) {
-      vaultCacheService.stopPeriodicRefresh();
-    }
 
     // Close the main MCP server (only relevant for stdio)
     if (server) {
@@ -175,79 +165,7 @@ const start = async () => {
   try {
     // --- Instantiate Shared Services ---
     logger.debug("Instantiating shared services...", startupContext);
-    obsidianService = new ObsidianRestApiService(); // Instantiate Obsidian Service
-
-    // --- Perform Initial Obsidian API Status Check ---
-    try {
-      logger.info(
-        "Performing initial Obsidian API status check with retries...",
-        startupContext,
-      );
-
-      const status = await retryWithDelay(
-        async () => {
-          if (!obsidianService) {
-            // This case should not happen in practice, but it satisfies the type checker.
-            throw new Error("Obsidian service not initialized.");
-          }
-          const checkStatusContext = {
-            ...startupContext,
-            operation: "checkStatusAttempt",
-          };
-          const currentStatus =
-            await obsidianService.checkStatus(checkStatusContext);
-          if (
-            currentStatus?.service !== "Obsidian Local REST API" ||
-            !currentStatus?.authenticated
-          ) {
-            // Throw an error to trigger a retry
-            throw new Error(
-              `Obsidian API status check failed or indicates authentication issue. Status: ${JSON.stringify(
-                currentStatus,
-              )}`,
-            );
-          }
-          return currentStatus;
-        },
-        {
-          operationName: "initialObsidianApiCheck",
-          context: startupContext,
-          maxRetries: 5, // Retry up to 5 times
-          delayMs: 3000, // Wait 3 seconds between retries
-        },
-      );
-
-      logger.info("Obsidian API status check successful.", {
-        ...startupContext,
-        obsidianVersion: status.versions.obsidian,
-        pluginVersion: status.versions.self,
-      });
-    } catch (statusError) {
-      logger.error(
-        "Critical error during initial Obsidian API status check after multiple retries. Check OBSIDIAN_BASE_URL, OBSIDIAN_API_KEY, and plugin status.",
-        {
-          ...startupContext,
-          error:
-            statusError instanceof Error
-              ? statusError.message
-              : String(statusError),
-          stack: statusError instanceof Error ? statusError.stack : undefined,
-        },
-      );
-      // Re-throw the final error to be caught by the main startup catch block, which will exit the process.
-      throw statusError;
-    }
-    // --- End Status Check ---
-
-    if (config.obsidianEnableCache) {
-      vaultCacheService = new VaultCacheService(obsidianService); // Instantiate Cache Service, passing Obsidian Service
-      logger.info(
-        "Vault cache is enabled and service is instantiated.",
-        startupContext,
-      );
-    } else {
-      logger.info("Vault cache is disabled by configuration.", startupContext);
-    }
+    obsidianSheetPlusService = new ObsidianSheetPlusRestApiService(); // Instantiate Obsidian Sheet Plus Service
     logger.info("Shared services instantiated.", startupContext);
     // --- End Service Instantiation ---
 
@@ -261,8 +179,7 @@ const start = async () => {
     // For stdio, this returns the McpServer instance.
     // For http, it returns the http.Server instance.
     const serverOrHttpInstance = await initializeAndStartServer(
-      obsidianService,
-      vaultCacheService,
+      obsidianSheetPlusService,
     );
 
     if (
@@ -300,36 +217,7 @@ const start = async () => {
       },
     );
 
-    // --- Trigger Background Cache Build ---
-    if (config.obsidianEnableCache && vaultCacheService) {
-      // Start building the cache, but don't wait for it to finish.
-      // The server will be operational while the cache builds.
-      // Tools needing the cache should check its readiness state.
-      logger.info("Triggering background vault cache build...", startupContext);
-      // No 'await' here - run in background
-      vaultCacheService
-        .buildVaultCache()
-        .then(() => {
-          // Once the initial build is done, start the periodic refresh
-          vaultCacheService?.startPeriodicRefresh();
-        })
-        .catch((cacheBuildError) => {
-          // Log errors during the background build process
-          logger.error("Error occurred during background vault cache build", {
-            ...startupContext, // Use startup context for correlation
-            operation: "BackgroundCacheBuild",
-            error:
-              cacheBuildError instanceof Error
-                ? cacheBuildError.message
-                : String(cacheBuildError),
-            stack:
-              cacheBuildError instanceof Error
-                ? cacheBuildError.stack
-                : undefined,
-          });
-        });
-    }
-    // --- End Cache Build Trigger ---
+
 
     // --- Signal and Error Handling Setup ---
 
