@@ -20,19 +20,15 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { config, environment } from "../config/index.js";
 // Import core utilities: ErrorHandler, logger, requestContextService.
 import { ErrorHandler, logger, requestContextService } from "../utils/index.js";
-// Import the Obsidian service
-import { ObsidianRestApiService } from "../services/obsidianRestAPI/index.js";
-// Import the Vault Cache service
-import { VaultCacheService } from "../services/obsidianRestAPI/vaultCache/index.js";
-// Import registration functions for specific resources and tools.
-import { registerObsidianDeleteNoteTool } from "./tools/obsidianDeleteNoteTool/index.js";
-import { registerObsidianGlobalSearchTool } from "./tools/obsidianGlobalSearchTool/index.js";
-import { registerObsidianListNotesTool } from "./tools/obsidianListNotesTool/index.js";
-import { registerObsidianReadNoteTool } from "./tools/obsidianReadNoteTool/index.js";
-import { registerObsidianSearchReplaceTool } from "./tools/obsidianSearchReplaceTool/index.js";
-import { registerObsidianUpdateNoteTool } from "./tools/obsidianUpdateNoteTool/index.js";
-import { registerObsidianManageFrontmatterTool } from "./tools/obsidianManageFrontmatterTool/index.js";
-import { registerObsidianManageTagsTool } from "./tools/obsidianManageTagsTool/index.js";
+// Import the Obsidian Sheet Plus service
+import { ObsidianSheetPlusRestApiService } from "../services/obsidianSheetPlusRestAPI/index.js";
+// Import Obsidian Sheet Plus tools
+import { registerObsidianSheetPlusGetSheetListToolHandler } from "./tools/obsidianSheetPlusGetSheetListTool/index.js";
+import { registerObsidianSheetPlusGetSheetDataToolHandler } from "./tools/obsidianSheetPlusGetSheetDataTool/index.js";
+import { registerObsidianSheetPlusGetWorkbookToolHandler } from "./tools/obsidianSheetPlusGetWorkbookTool/index.js";
+import { registerObsidianSheetPlusSetSheetDataToolHandler } from "./tools/obsidianSheetPlusSetSheetDataTool/index.js";
+import { registerObsidianSheetPlusGetWorkbookDataToolHandler } from "./tools/obsidianSheetPlusGetWorkbookDataTool/index.js";
+import { registerObsidianSheetPlusSetDataValidationToolHandler } from "./tools/obsidianSheetPlusSetDataValidationTool/index.js";
 // Import transport setup functions.
 import { startHttpTransport } from "./transports/httpTransport.js";
 import { connectStdioTransport } from "./transports/stdioTransport.js";
@@ -42,7 +38,7 @@ import { connectStdioTransport } from "./transports/stdioTransport.js";
  *
  * This function is central to defining the server's identity and functionality
  * as presented to connecting clients during the MCP initialization phase.
- * It uses pre-instantiated shared services like Obsidian API and Vault Cache.
+ * It uses pre-instantiated shared services like Obsidian Sheet Plus API.
  *
  * MCP Spec Relevance:
  * - Server Identity (`serverInfo`): The `name` and `version` provided here are part
@@ -52,15 +48,13 @@ import { connectStdioTransport } from "./transports/stdioTransport.js";
  *
  * Design Note: This factory is called once for 'stdio' transport and per session for 'http' transport.
  *
- * @param {ObsidianRestApiService} obsidianService - The shared Obsidian REST API service instance.
- * @param {VaultCacheService | undefined} vaultCacheService - The shared Vault Cache service instance, which may be undefined if disabled.
+ * @param {ObsidianSheetPlusRestApiService} obsidianSheetPlusService - The shared Obsidian Sheet Plus REST API service instance.
  * @returns {Promise<McpServer>} A promise resolving with the configured `McpServer` instance.
  * @throws {Error} If any resource or tool registration fails.
  * @private
  */
 async function createMcpServerInstance(
-  obsidianService: ObsidianRestApiService,
-  vaultCacheService: VaultCacheService | undefined,
+  obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<McpServer> {
   const context = requestContextService.createRequestContext({
     operation: "createMcpServerInstance",
@@ -101,71 +95,18 @@ async function createMcpServerInstance(
       "Registering resources and tools using shared services...",
       context,
     );
-    // Register all tools, passing the vaultCacheService which may be undefined
-    await registerObsidianListNotesTool(server, obsidianService);
-    await registerObsidianReadNoteTool(server, obsidianService);
-    await registerObsidianDeleteNoteTool(
-      server,
-      obsidianService,
-      vaultCacheService,
-    );
-    if (vaultCacheService) {
-      await registerObsidianGlobalSearchTool(
-        server,
-        obsidianService,
-        vaultCacheService,
-      );
-    } else {
-      logger.warning(
-        "Skipping registration of 'obsidian_global_search' because the Vault Cache Service is disabled.",
-        context,
-      );
-    }
-    await registerObsidianSearchReplaceTool(
-      server,
-      obsidianService,
-      vaultCacheService,
-    );
-    await registerObsidianUpdateNoteTool(
-      server,
-      obsidianService,
-      vaultCacheService,
-    );
-    await registerObsidianManageFrontmatterTool(
-      server,
-      obsidianService,
-      vaultCacheService,
-    );
-    await registerObsidianManageTagsTool(
-      server,
-      obsidianService,
-      vaultCacheService,
-    );
+    
+    // Register Obsidian Sheet Plus tools
+    logger.debug("Registering Obsidian Sheet Plus tools...", context);
+    await registerObsidianSheetPlusGetSheetListToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusGetSheetDataToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusGetWorkbookToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusSetSheetDataToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusGetWorkbookDataToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusSetDataValidationToolHandler(server, obsidianSheetPlusService);
+    logger.debug("Obsidian Sheet Plus tools registered successfully", context);
 
     logger.info("Resources and tools registered successfully", context);
-
-    if (vaultCacheService) {
-      logger.info(
-        "Triggering background vault cache build (if not already built/building)...",
-        context,
-      );
-      // Intentionally not awaiting this promise to allow server startup to proceed.
-      // Errors are logged within the catch block.
-      vaultCacheService.buildVaultCache().catch((cacheBuildError) => {
-        logger.error("Error occurred during background vault cache build", {
-          ...context, // Use the initial context for correlation
-          subOperation: "BackgroundVaultCacheBuild", // Add sub-operation for clarity
-          error:
-            cacheBuildError instanceof Error
-              ? cacheBuildError.message
-              : String(cacheBuildError),
-          stack:
-            cacheBuildError instanceof Error
-              ? cacheBuildError.stack
-              : undefined,
-        });
-      });
-    }
   } catch (err) {
     logger.error("Failed to register resources/tools", {
       ...context,
@@ -188,15 +129,13 @@ async function createMcpServerInstance(
  * - Transport Connection: Calls dedicated functions for chosen transport.
  * - Server Instance Lifecycle: Single instance for 'stdio', per-session for 'http'.
  *
- * @param {ObsidianRestApiService} obsidianService - The shared Obsidian REST API service instance.
- * @param {VaultCacheService | undefined} vaultCacheService - The shared Vault Cache service instance.
+ * @param {ObsidianSheetPlusRestApiService} obsidianSheetPlusService - The shared Obsidian Sheet Plus REST API service instance.
  * @returns {Promise<McpServer | void>} Resolves with the `McpServer` instance for 'stdio', or `void` for 'http'.
  * @throws {Error} If the configured transport type is unsupported or if transport setup fails.
  * @private
  */
 async function startTransport(
-  obsidianService: ObsidianRestApiService,
-  vaultCacheService: VaultCacheService | undefined,
+  obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<McpServer | ServerType | void> {
   const transportType = config.mcpTransportType;
   const context = requestContextService.createRequestContext({
@@ -211,13 +150,13 @@ async function startTransport(
       context,
     );
     // For HTTP, startHttpTransport manages its own lifecycle and server instances per session.
-    // It needs a factory function to create new McpServer instances, passing along the shared services.
-    const mcpServerFactory = async () =>
-      createMcpServerInstance(obsidianService, vaultCacheService);
-    const httpServerInstance = await startHttpTransport(
-      mcpServerFactory,
-      context,
-    );
+          // It needs a factory function to create new McpServer instances, passing along the shared services.
+          const mcpServerFactory = async () =>
+            createMcpServerInstance(obsidianSheetPlusService);
+          const httpServerInstance = await startHttpTransport(
+            mcpServerFactory,
+            context,
+          );
     return httpServerInstance; // Return the http.Server instance.
   }
 
@@ -227,8 +166,7 @@ async function startTransport(
       context,
     );
     const server = await createMcpServerInstance(
-      obsidianService,
-      vaultCacheService,
+      obsidianSheetPlusService,
     );
     logger.debug("Delegating to connectStdioTransport...", context);
     await connectStdioTransport(server, context);
@@ -253,14 +191,12 @@ async function startTransport(
  * - Manages server startup, leading to a server ready for MCP messages.
  * - Handles critical startup failures, ensuring appropriate process exit.
  *
- * @param {ObsidianRestApiService} obsidianService - The shared Obsidian REST API service instance, instantiated by the caller (e.g., index.ts).
- * @param {VaultCacheService | undefined} vaultCacheService - The shared Vault Cache service instance, instantiated by the caller (e.g., index.ts).
+ * @param {ObsidianSheetPlusRestApiService} obsidianSheetPlusService - The shared Obsidian Sheet Plus REST API service instance, instantiated by the caller (e.g., index.ts).
  * @returns {Promise<void | McpServer>} For 'stdio', resolves with `McpServer`. For 'http', runs indefinitely.
  *   Rejects on critical failure, leading to process exit.
  */
 export async function initializeAndStartServer(
-  obsidianService: ObsidianRestApiService,
-  vaultCacheService: VaultCacheService | undefined,
+  obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void | McpServer | ServerType> {
   const context = requestContextService.createRequestContext({
     operation: "initializeAndStartServer",
@@ -273,12 +209,12 @@ export async function initializeAndStartServer(
   try {
     // Services are now provided by the caller (e.g., index.ts)
     logger.debug(
-      "Using provided shared services (ObsidianRestApiService, VaultCacheService).",
+      "Using provided shared services (ObsidianSheetPlusRestApiService).",
       context,
     );
 
     // Initiate the transport setup based on configuration, passing shared services.
-    const result = await startTransport(obsidianService, vaultCacheService);
+    const result = await startTransport(obsidianSheetPlusService);
     logger.info(
       "MCP Server initialization sequence completed successfully.",
       context,
