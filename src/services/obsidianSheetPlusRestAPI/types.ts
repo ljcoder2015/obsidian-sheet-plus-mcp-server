@@ -60,14 +60,9 @@ export interface WorkbookData {
  * Parameters for setting sheet data.
  */
 export interface SetSheetDataParams {
-  sheetName: string;
-  cells: CellData[];
-  range?: {
-    startRow: number;
-    startColumn: number;
-    endRow: number;
-    endColumn: number;
-  };
+  sheetName?: string;
+  values: any[][];
+  range: string;
 }
 
 /**
@@ -83,9 +78,8 @@ export interface CreateSheetParams {
  * Parameters for setting a formula.
  */
 export interface SetFormulaParams {
-  sheetName: string;
-  row: number;
-  column: number;
+  sheetName?: string;
+  range: string;
   formula: string;
 }
 

@@ -1,7 +1,7 @@
 /**
- * @module ObsidianSheetPlusSetSheetDataTool Registration
+ * @module ObsidianSheetPlusSetRangeStyleTool Registration
  * @description
- * Registers the Obsidian Sheet Plus Set Sheet Data tool with the MCP server.
+ * Registers the Obsidian Sheet Plus Set Range Style tool with the MCP server.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -14,29 +14,39 @@ import {
   requestContextService,
 } from "../../../utils/index.js";
 import { z } from "zod";
-import { setSheetData } from "./logic.js";
-import type { SetSheetDataParams } from "../../../services/obsidianSheetPlusRestAPI/types.js";
+import { setRangeStyle } from "./logic.js";
 
 // Define input schema using Zod
-const ObsidianSheetPlusSetSheetDataInputSchema = z.object({
-  sheetName: z.string().optional().describe("The name of the sheet to set data to"),
-  values: z.array(
-    z.array(z.any().describe("The cell value"))
-  ).describe("The cell data to set"),
-  range: z.string().describe("The data range"),
+const ObsidianSheetPlusSetRangeStyleInputSchema = z.object({
+  sheetName: z.string().describe("The name of the sheet"),
+  startRow: z.number().int().describe("The starting row index (0-based)"),
+  startColumn: z.number().int().describe("The starting column index (0-based)"),
+  endRow: z.number().int().describe("The ending row index (0-based)"),
+  endColumn: z.number().int().describe("The ending column index (0-based)"),
+  style: z.object({
+    bold: z.boolean().optional().describe("Whether to set bold text"),
+    italic: z.boolean().optional().describe("Whether to set italic text"),
+    underline: z.boolean().optional().describe("Whether to set underline text"),
+    fontSize: z.number().optional().describe("The font size"),
+    fontFamily: z.string().optional().describe("The font family"),
+    color: z.string().optional().describe("The text color (hex format)"),
+    backgroundColor: z.string().optional().describe("The background color (hex format)"),
+    horizontalAlignment: z.enum(["left", "center", "right"]).optional().describe("Horizontal alignment"),
+    verticalAlignment: z.enum(["top", "center", "bottom"]).optional().describe("Vertical alignment"),
+  }).describe("The style object"),
 });
 
-export async function registerObsidianSheetPlusSetSheetDataTool(
+export async function registerObsidianSheetPlusSetRangeStyleTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_set_sheet_data";
-  const toolDescription = "Sets data to a specific sheet";
+  const toolName = "obsidian_sheet_plus_set_range_style";
+  const toolDescription = "Sets style for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
-    operation: "RegisterObsidianSheetPlusSetSheetDataTool",
+    operation: "RegisterObsidianSheetPlusSetRangeStyleTool",
     toolName: toolName,
-    module: "ObsidianSheetPlusSetSheetDataRegistration",
+    module: "ObsidianSheetPlusSetRangeStyleRegistration",
   });
 
   logger.info(`Attempting to register tool: ${toolName}`, registrationContext);
@@ -46,11 +56,11 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusSetSheetDataInputSchema.shape,
+        ObsidianSheetPlusSetRangeStyleInputSchema.shape,
         async (params) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
-            operation: "HandleObsidianSheetPlusSetSheetDataRequest",
+            operation: "HandleObsidianSheetPlusSetRangeStyleRequest",
             toolName: toolName,
             params: params,
           });
@@ -58,7 +68,7 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await setSheetData(obsidianSheetPlusService, params as SetSheetDataParams, logger, handlerContext);
+              const response = await setRangeStyle(obsidianSheetPlusService, logger, handlerContext, params);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {
@@ -68,7 +78,7 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
                     text: JSON.stringify(response, null, 2),
                   },
                 ],
-                isError: false,
+                isError: !response.success,
               };
             },
             {

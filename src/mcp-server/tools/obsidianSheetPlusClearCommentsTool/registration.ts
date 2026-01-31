@@ -1,7 +1,7 @@
 /**
- * @module ObsidianSheetPlusSetSheetDataTool Registration
+ * @module ObsidianSheetPlusClearCommentsTool Registration
  * @description
- * Registers the Obsidian Sheet Plus Set Sheet Data tool with the MCP server.
+ * Registers the Obsidian Sheet Plus Clear Comments tool with the MCP server.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -14,29 +14,25 @@ import {
   requestContextService,
 } from "../../../utils/index.js";
 import { z } from "zod";
-import { setSheetData } from "./logic.js";
-import type { SetSheetDataParams } from "../../../services/obsidianSheetPlusRestAPI/types.js";
+import { clearComments } from "./logic.js";
 
 // Define input schema using Zod
-const ObsidianSheetPlusSetSheetDataInputSchema = z.object({
-  sheetName: z.string().optional().describe("The name of the sheet to set data to"),
-  values: z.array(
-    z.array(z.any().describe("The cell value"))
-  ).describe("The cell data to set"),
-  range: z.string().describe("The data range"),
+const ObsidianSheetPlusClearCommentsInputSchema = z.object({
+  sheetName: z.string().describe("The name of the sheet"),
+  range: z.string().describe("The cell range (e.g., 'A1:B2')"),
 });
 
-export async function registerObsidianSheetPlusSetSheetDataTool(
+export async function registerObsidianSheetPlusClearCommentsTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_set_sheet_data";
-  const toolDescription = "Sets data to a specific sheet";
+  const toolName = "obsidian_sheet_plus_clear_comments";
+  const toolDescription = "Clears comments for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
-    operation: "RegisterObsidianSheetPlusSetSheetDataTool",
+    operation: "RegisterObsidianSheetPlusClearCommentsTool",
     toolName: toolName,
-    module: "ObsidianSheetPlusSetSheetDataRegistration",
+    module: "ObsidianSheetPlusClearCommentsRegistration",
   });
 
   logger.info(`Attempting to register tool: ${toolName}`, registrationContext);
@@ -46,11 +42,11 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusSetSheetDataInputSchema.shape,
+        ObsidianSheetPlusClearCommentsInputSchema.shape,
         async (params) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
-            operation: "HandleObsidianSheetPlusSetSheetDataRequest",
+            operation: "HandleObsidianSheetPlusClearCommentsRequest",
             toolName: toolName,
             params: params,
           });
@@ -58,7 +54,7 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await setSheetData(obsidianSheetPlusService, params as SetSheetDataParams, logger, handlerContext);
+              const response = await clearComments(obsidianSheetPlusService, logger, handlerContext, params);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {
@@ -68,7 +64,7 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
                     text: JSON.stringify(response, null, 2),
                   },
                 ],
-                isError: false,
+                isError: !response.success,
               };
             },
             {
