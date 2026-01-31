@@ -8,21 +8,24 @@ import { ObsidianSheetPlusRestApiService } from "../../../services/obsidianSheet
 
 export async function getSheetData(
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
-  sheetName: string,
+  sheetName: string | undefined,
+  range: string | undefined,
   logger: any,
   requestContext: any,
 ) {
   try {
-    logger.info(`Getting sheet data for sheet: ${sheetName}`, requestContext);
-    const sheetData = await obsidianSheetPlusService.getSheetData(sheetName, requestContext);
-    logger.info(`Retrieved data for sheet: ${sheetName}`, requestContext);
+    const targetSheet = sheetName || "active sheet";
+    logger.info(`Getting sheet data for sheet: ${targetSheet}`, requestContext);
+    const sheetData = await obsidianSheetPlusService.getSheetData(sheetName, range, requestContext);
+    logger.info(`Retrieved data for sheet: ${targetSheet}`, requestContext);
     
     return {
       success: true,
       data: sheetData,
     };
   } catch (error) {
-    logger.error(`Error getting sheet data for sheet: ${sheetName}`, error, requestContext);
+    const targetSheet = sheetName || "active sheet";
+    logger.error(`Error getting sheet data for sheet: ${targetSheet}`, error, requestContext);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

@@ -15,7 +15,7 @@ export async function setSheetData(
 ) {
   try {
     logger.info(`Setting sheet data for sheet: ${params.sheetName}`, requestContext);
-    logger.debug(`Setting ${params.cells?.length || 0} cells`, requestContext);
+    logger.debug(`Setting ${params.values?.length || 0} cells`, requestContext);
     const result = await obsidianSheetPlusService.setSheetData(params, requestContext);
     logger.info(`Successfully set sheet data for sheet: ${params.sheetName}`, requestContext);
     

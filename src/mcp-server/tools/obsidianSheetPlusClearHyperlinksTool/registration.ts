@@ -1,7 +1,7 @@
 /**
- * @module ObsidianSheetPlusGetWorkbookTool Registration
+ * @module ObsidianSheetPlusClearHyperlinksTool Registration
  * @description
- * Registers the Obsidian Sheet Plus Get Workbook tool with the MCP server.
+ * Registers the Obsidian Sheet Plus Clear Hyperlinks tool with the MCP server.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -14,24 +14,25 @@ import {
   requestContextService,
 } from "../../../utils/index.js";
 import { z } from "zod";
-import { getWorkbook } from "./logic.js";
+import { clearHyperlinks } from "./logic.js";
 
 // Define input schema using Zod
-const ObsidianSheetPlusGetWorkbookInputSchema = z.object({
-  // No input parameters required
+const ObsidianSheetPlusClearHyperlinksInputSchema = z.object({
+  sheetName: z.string().describe("The name of the sheet"),
+  range: z.string().describe("The cell range (e.g., 'A1:B2')"),
 });
 
-export async function registerObsidianSheetPlusGetWorkbookTool(
+export async function registerObsidianSheetPlusClearHyperlinksTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_get_workbook";
-  const toolDescription = "Gets full workbook data including all sheets";
+  const toolName = "obsidian_sheet_plus_clear_hyperlinks";
+  const toolDescription = "Clears hyperlinks for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
-    operation: "RegisterObsidianSheetPlusGetWorkbookTool",
+    operation: "RegisterObsidianSheetPlusClearHyperlinksTool",
     toolName: toolName,
-    module: "ObsidianSheetPlusGetWorkbookRegistration",
+    module: "ObsidianSheetPlusClearHyperlinksRegistration",
   });
 
   logger.info(`Attempting to register tool: ${toolName}`, registrationContext);
@@ -41,11 +42,11 @@ export async function registerObsidianSheetPlusGetWorkbookTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusGetWorkbookInputSchema.shape,
+        ObsidianSheetPlusClearHyperlinksInputSchema.shape,
         async (params) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
-            operation: "HandleObsidianSheetPlusGetWorkbookRequest",
+            operation: "HandleObsidianSheetPlusClearHyperlinksRequest",
             toolName: toolName,
             params: params,
           });
@@ -53,7 +54,7 @@ export async function registerObsidianSheetPlusGetWorkbookTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await getWorkbook(obsidianSheetPlusService, logger, handlerContext);
+              const response = await clearHyperlinks(obsidianSheetPlusService, logger, handlerContext, params);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {
@@ -63,7 +64,7 @@ export async function registerObsidianSheetPlusGetWorkbookTool(
                     text: JSON.stringify(response, null, 2),
                   },
                 ],
-                isError: false,
+                isError: !response.success,
               };
             },
             {

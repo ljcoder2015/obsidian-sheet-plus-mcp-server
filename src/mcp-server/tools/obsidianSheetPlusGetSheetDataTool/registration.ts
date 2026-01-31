@@ -18,7 +18,8 @@ import { getSheetData } from "./logic.js";
 
 // Define input schema using Zod
 const ObsidianSheetPlusGetSheetDataInputSchema = z.object({
-  sheetName: z.string().describe("The name of the sheet to get data from"),
+  sheetName: z.string().optional().describe("The name of the sheet to get data from (optional, defaults to active sheet)"),
+  range: z.string().optional().describe("The range of cells to get data from"),
 });
 
 export async function registerObsidianSheetPlusGetSheetDataTool(
@@ -53,7 +54,7 @@ export async function registerObsidianSheetPlusGetSheetDataTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await getSheetData(obsidianSheetPlusService, params.sheetName, logger, handlerContext);
+              const response = await getSheetData(obsidianSheetPlusService, params.sheetName, params.range, logger, handlerContext);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {

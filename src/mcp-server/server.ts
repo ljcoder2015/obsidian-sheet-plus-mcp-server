@@ -25,10 +25,21 @@ import { ObsidianSheetPlusRestApiService } from "../services/obsidianSheetPlusRe
 // Import Obsidian Sheet Plus tools
 import { registerObsidianSheetPlusGetSheetListToolHandler } from "./tools/obsidianSheetPlusGetSheetListTool/index.js";
 import { registerObsidianSheetPlusGetSheetDataToolHandler } from "./tools/obsidianSheetPlusGetSheetDataTool/index.js";
-import { registerObsidianSheetPlusGetWorkbookToolHandler } from "./tools/obsidianSheetPlusGetWorkbookTool/index.js";
 import { registerObsidianSheetPlusSetSheetDataToolHandler } from "./tools/obsidianSheetPlusSetSheetDataTool/index.js";
 import { registerObsidianSheetPlusGetWorkbookDataToolHandler } from "./tools/obsidianSheetPlusGetWorkbookDataTool/index.js";
 import { registerObsidianSheetPlusSetDataValidationToolHandler } from "./tools/obsidianSheetPlusSetDataValidationTool/index.js";
+import { registerObsidianSheetPlusCreateSheetToolHandler } from "./tools/obsidianSheetPlusCreateSheetTool/index.js";
+import { registerObsidianSheetPlusSetFormulaToolHandler } from "./tools/obsidianSheetPlusSetFormulaTool/index.js";
+import { registerObsidianSheetPlusSetRangeStyleToolHandler } from "./tools/obsidianSheetPlusSetRangeStyleTool/index.js";
+import { registerObsidianSheetPlusSetFilterToolHandler } from "./tools/obsidianSheetPlusSetFilterTool/index.js";
+import { registerObsidianSheetPlusClearFilterToolHandler } from "./tools/obsidianSheetPlusClearFilterTool/index.js";
+import { registerObsidianSheetPlusClearContentsToolHandler } from "./tools/obsidianSheetPlusClearContentsTool/index.js";
+import { registerObsidianSheetPlusClearFormatToolHandler } from "./tools/obsidianSheetPlusClearFormatTool/index.js";
+import { registerObsidianSheetPlusClearCommentsToolHandler } from "./tools/obsidianSheetPlusClearCommentsTool/index.js";
+import { registerObsidianSheetPlusClearHyperlinksToolHandler } from "./tools/obsidianSheetPlusClearHyperlinksTool/index.js";
+import { registerObsidianSheetPlusClearAllToolHandler } from "./tools/obsidianSheetPlusClearAllTool/index.js";
+import { registerObsidianSheetPlusClearDataValidationToolHandler } from "./tools/obsidianSheetPlusClearDataValidationTool/index.js";
+import { registerObsidianSheetPlusCheckStatusToolHandler } from "./tools/obsidianSheetPlusCheckStatusTool/index.js";
 // Import transport setup functions.
 import { startHttpTransport } from "./transports/httpTransport.js";
 import { connectStdioTransport } from "./transports/stdioTransport.js";
@@ -100,10 +111,21 @@ async function createMcpServerInstance(
     logger.debug("Registering Obsidian Sheet Plus tools...", context);
     await registerObsidianSheetPlusGetSheetListToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusGetSheetDataToolHandler(server, obsidianSheetPlusService);
-    await registerObsidianSheetPlusGetWorkbookToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusSetSheetDataToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusGetWorkbookDataToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusSetDataValidationToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusCreateSheetToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusSetFormulaToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusSetRangeStyleToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusSetFilterToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearFilterToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearContentsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearFormatToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearCommentsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearHyperlinksToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearAllToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearDataValidationToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusCheckStatusToolHandler(server, obsidianSheetPlusService);
     logger.debug("Obsidian Sheet Plus tools registered successfully", context);
 
     logger.info("Resources and tools registered successfully", context);

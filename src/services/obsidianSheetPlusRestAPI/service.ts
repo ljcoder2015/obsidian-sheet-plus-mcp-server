@@ -214,36 +214,20 @@ export class ObsidianSheetPlusRestApiService {
 
   /**
    * Gets data from a specific sheet.
-   * @param sheetName - The name of the sheet to get data from.
+   * @param sheetName - The name of the sheet to get data from (optional, defaults to active sheet).
+   * @param range - The range of cells to get data from.
    * @param context - Request context.
    * @returns The sheet data.
    */
-  async getSheetData(sheetName: string, context: RequestContext): Promise<SheetData> {
+  async getSheetData(sheetName: string | undefined, range: string | undefined, context: RequestContext): Promise<SheetData> {
     const response = await this._request<{ success: boolean; data: SheetData }>(
       {
         method: "GET",
         url: "/get_sheet_data",
-        params: { sheetName },
+        params: { sheetName, range },
       },
       context,
       "getSheetData",
-    );
-    return response.data;
-  }
-
-  /**
-   * Gets full workbook data including all sheets.
-   * @param context - Request context.
-   * @returns The workbook data.
-   */
-  async getWorkbook(context: RequestContext): Promise<WorkbookData> {
-    const response = await this._request<{ success: boolean; data: WorkbookData }>(
-      {
-        method: "GET",
-        url: "/get_workbook",
-      },
-      context,
-      "getWorkbook",
     );
     return response.data;
   }
