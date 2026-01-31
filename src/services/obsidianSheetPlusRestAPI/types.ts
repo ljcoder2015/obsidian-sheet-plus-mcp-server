@@ -87,11 +87,8 @@ export interface SetFormulaParams {
  * Parameters for setting range style.
  */
 export interface SetRangeStyleParams {
-  sheetName: string;
-  startRow: number;
-  startColumn: number;
-  endRow: number;
-  endColumn: number;
+  sheetName?: string;
+  range: string;
   style: any;
 }
 

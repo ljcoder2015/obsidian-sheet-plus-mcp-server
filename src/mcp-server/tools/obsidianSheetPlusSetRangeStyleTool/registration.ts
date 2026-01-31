@@ -18,21 +18,33 @@ import { setRangeStyle } from "./logic.js";
 
 // Define input schema using Zod
 const ObsidianSheetPlusSetRangeStyleInputSchema = z.object({
-  sheetName: z.string().describe("The name of the sheet"),
-  startRow: z.number().int().describe("The starting row index (0-based)"),
-  startColumn: z.number().int().describe("The starting column index (0-based)"),
-  endRow: z.number().int().describe("The ending row index (0-based)"),
-  endColumn: z.number().int().describe("The ending column index (0-based)"),
+  sheetName: z.string().optional().describe("The name of the sheet"),
+  range: z.string().describe("The range of cells to style (e.g., 'A1:B2')"),
   style: z.object({
-    bold: z.boolean().optional().describe("Whether to set bold text"),
-    italic: z.boolean().optional().describe("Whether to set italic text"),
-    underline: z.boolean().optional().describe("Whether to set underline text"),
+    backgroundColor: z.string().optional().describe("The background color (hex format)"),
+    fontColor: z.string().optional().describe("The font color (hex format)"),
     fontSize: z.number().optional().describe("The font size"),
     fontFamily: z.string().optional().describe("The font family"),
-    color: z.string().optional().describe("The text color (hex format)"),
-    backgroundColor: z.string().optional().describe("The background color (hex format)"),
+    bold: z.boolean().optional().describe("Whether to set bold text"),
+    fontLine: z.enum(["none","single", "double"]).optional().describe("The font line style"),
+    fontWeight: z.enum(["normal", "bold"]).optional().describe("The font weight"),
+    fontStyle: z.enum(["normal", "italic"]).optional().describe("The font style"),
+    textDecoration: z.enum(["none", "underline", "line-through"]).optional().describe("The text decoration"),
     horizontalAlignment: z.enum(["left", "center", "right"]).optional().describe("Horizontal alignment"),
     verticalAlignment: z.enum(["top", "center", "bottom"]).optional().describe("Vertical alignment"),
+    textRotation: z.number().optional().describe("The text rotation angle"),
+    wrap: z.boolean().optional().describe("The wrap strategy"),
+    border: z.object({
+      type: z.enum(['top', 'bottom', 'left', 'right', 'none', 'all', 'outside', 'inside', 'horizontal', 'vertical', 'tlbr', 'tlbc_tlmr', 'tlbr_tlbc_tlmr', 'bl_tr', 'mltr_bctr']).optional().describe("The border type"),
+      style: z.enum(['NONE', 'THIN', 'HAIR', 'DOTTED', 'DASHED', 'DASH_DOT', 'DASH_DOT_DOT', 'DOUBLE',
+                  'MEDIUM',
+                  'MEDIUM_DASHED',
+                  'MEDIUM_DASH_DOT',
+                  'MEDIUM_DASH_DOT_DOT',
+                  'SLANT_DASH_DOT',
+                  'THICK',]).optional().describe("The border style"),
+      color: z.string().optional().describe("The border color (hex format)"),
+    }).optional().describe("The border object"),
   }).describe("The style object"),
 });
 

@@ -16,7 +16,7 @@ export async function setRangeStyle(
   try {
     logger.info("Setting range style in Obsidian Sheet Plus API", requestContext);
     const result = await obsidianSheetPlusService.setRangeStyle(params, requestContext);
-    logger.info(`Range style set successfully for range ${params.startRow}:${params.startColumn} to ${params.endRow}:${params.endColumn}`, requestContext);
+    logger.info(`Range style set successfully for range ${params.range}`, requestContext);
     
     return result;
   } catch (error) {
