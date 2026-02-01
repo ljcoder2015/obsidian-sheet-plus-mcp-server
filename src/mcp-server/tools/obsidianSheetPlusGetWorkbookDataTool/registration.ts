@@ -25,7 +25,7 @@ export async function registerObsidianSheetPlusGetWorkbookDataTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_get_workbook_data";
+  const toolName = "get_workbook_data";
   const toolDescription = "Gets full workbook data including all sheets and plugin data";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

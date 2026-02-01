@@ -25,7 +25,7 @@ export async function registerObsidianSheetPlusCheckStatusTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_check_status";
+  const toolName = "check_status";
   const toolDescription = "Checks the status and authentication of the Obsidian Sheet Plus REST API";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

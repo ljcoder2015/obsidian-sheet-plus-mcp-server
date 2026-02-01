@@ -26,7 +26,7 @@ export async function registerObsidianSheetPlusClearDataValidationTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_clear_data_validation";
+  const toolName = "clear_data_validation";
   const toolDescription = "Clears data validation for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

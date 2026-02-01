@@ -36,13 +36,8 @@ const ObsidianSheetPlusSetRangeStyleInputSchema = z.object({
     wrap: z.boolean().optional().describe("The wrap strategy"),
     border: z.object({
       type: z.enum(['top', 'bottom', 'left', 'right', 'none', 'all', 'outside', 'inside', 'horizontal', 'vertical', 'tlbr', 'tlbc_tlmr', 'tlbr_tlbc_tlmr', 'bl_tr', 'mltr_bctr']).optional().describe("The border type"),
-      style: z.enum(['NONE', 'THIN', 'HAIR', 'DOTTED', 'DASHED', 'DASH_DOT', 'DASH_DOT_DOT', 'DOUBLE',
-                  'MEDIUM',
-                  'MEDIUM_DASHED',
-                  'MEDIUM_DASH_DOT',
-                  'MEDIUM_DASH_DOT_DOT',
-                  'SLANT_DASH_DOT',
-                  'THICK',]).optional().describe("The border style"),
+      style: z.number().optional().describe("The border style, e.g., NONE = 0, THIN = 1, HAIR = 2, DOTTED = 3, DASHED = 4, DASH_DOT = 5, DASH_DOT_DOT = 6, DOUBLE = 7, MEDIUM = 8, MEDIUM_DASHED = 9, MEDIUM_DASH_DOT = 10, MEDIUM_DASH_DOT_DOT = 11, SLANT_DASH_DOT = 12, THICK = 13"),
+                  
       color: z.string().optional().describe("The border color (hex format)"),
     }).optional().describe("The border object"),
   }).describe("The style object"),
@@ -52,7 +47,7 @@ export async function registerObsidianSheetPlusSetRangeStyleTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_set_range_style";
+  const toolName = "set_range_style";
   const toolDescription = "Sets style for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

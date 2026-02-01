@@ -27,7 +27,7 @@ export async function registerObsidianSheetPlusSetFormulaTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_set_formula";
+  const toolName = "set_formula";
   const toolDescription = "Sets a formula in a specific cell or range";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

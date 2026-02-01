@@ -25,7 +25,7 @@ export async function registerObsidianSheetPlusCreateSheetTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_create_sheet";
+  const toolName = "create_sheet";
   const toolDescription = "Creates a new sheet in the workbook";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

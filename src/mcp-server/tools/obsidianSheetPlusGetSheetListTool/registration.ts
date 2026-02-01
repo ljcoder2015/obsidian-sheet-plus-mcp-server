@@ -25,7 +25,7 @@ export async function registerObsidianSheetPlusGetSheetListTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_get_sheet_list";
+  const toolName = "get_sheet_list";
   const toolDescription = "Gets the list of sheets in the workbook";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

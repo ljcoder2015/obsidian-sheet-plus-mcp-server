@@ -19,19 +19,19 @@ This server equips your AI with 13 specialized tools to interact with your Obsid
 
 | Tool Name | Description | Key Features |
 | :-------- | :---------- | :----------- |
-| `obsidian_sheet_plus_get_sheet_list` | Retrieves the list of sheets in the workbook | Returns sheet names, IDs, and metadata |
-| `obsidian_sheet_plus_get_sheet_data` | Gets data from a specific sheet | Supports range selection and structured data formats |
-| `obsidian_sheet_plus_get_workbook_data` | Gets full workbook data including all sheets | Returns comprehensive workbook information |
-| `obsidian_sheet_plus_set_sheet_data` | Sets data to a specific sheet | Supports batch operations and 2D array data |
-| `obsidian_sheet_plus_create_sheet` | Creates a new sheet in the workbook | Supports custom sheet names |
-| `obsidian_sheet_plus_set_formula` | Sets formulas in specified cells | Supports Excel-compatible formulas |
-| `obsidian_sheet_plus_set_range_style` | Sets style for specified cell range | Supports font, color, background, borders, etc. |
-| `obsidian_sheet_plus_set_data_validation` | Sets data validation rules for cells | Supports various validation types and rules |
-| `obsidian_sheet_plus_clear_contents` | Clears contents of specified cell range | Removes cell values while preserving formatting |
-| `obsidian_sheet_plus_clear_format` | Clears formats of specified cell range | Resets cell formatting to defaults |
-| `obsidian_sheet_plus_clear_all` | Clears both contents and formats | Completely resets specified cells |
-| `obsidian_sheet_plus_clear_data_validation` | Clears data validation rules | Removes validation constraints from cells |
-| `obsidian_sheet_plus_check_status` | Checks the status of the MCP server | Verifies connection to Obsidian Sheet Plus plugin |
+| `get_sheet_list` | Retrieves the list of sheets in the workbook | Returns sheet names, IDs, and metadata |
+| `get_sheet_data` | Gets data from a specific sheet | Supports range selection and structured data formats |
+| `get_workbook_data` | Gets full workbook data including all sheets | Returns comprehensive workbook information |
+| `set_sheet_data` | Sets data to a specific sheet | Supports batch operations and 2D array data |
+| `create_sheet` | Creates a new sheet in the workbook | Supports custom sheet names |
+| `set_formula` | Sets formulas in specified cells | Supports Excel-compatible formulas |
+| `set_range_style` | Sets style for specified cell range | Supports font, color, background, borders, etc. |
+| `set_data_validation` | Sets data validation rules for cells | Supports various validation types and rules |
+| `clear_contents` | Clears contents of specified cell range | Removes cell values while preserving formatting |
+| `clear_format` | Clears formats of specified cell range | Resets cell formatting to defaults |
+| `clear_all` | Clears both contents and formats | Completely resets specified cells |
+| `clear_data_validation` | Clears data validation rules | Removes validation constraints from cells |
+| `check_status` | Checks the status of the MCP server | Verifies connection to Obsidian Sheet Plus plugin |
 
 ---
 
@@ -177,7 +177,7 @@ Once configured, Claude can use the MCP server to interact with your Obsidian sh
 Human: Get data from the "Budget" sheet in my Obsidian workbook
 Assistant: I'll help you get data from the "Budget" sheet. Let me use the Obsidian Sheet Plus tool to retrieve this information.
 
-[Using tool: obsidian_sheet_plus_get_sheet_data]
+[Using tool: get_sheet_data]
 [Parameters: {"sheetName": "Budget"}]
 
 [Tool response: {
@@ -208,7 +208,7 @@ Here's the data from your "Budget" sheet:
 Human: Update the "Budget" sheet to change Food to 450
 Assistant: I'll help you update the "Budget" sheet. Let me use the Obsidian Sheet Plus tool to make this change.
 
-[Using tool: obsidian_sheet_plus_set_sheet_data]
+[Using tool: set_sheet_data]
 [Parameters: {
   "sheetName": "Budget",
   "range": "B3",

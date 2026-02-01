@@ -34,7 +34,7 @@ export async function registerObsidianSheetPlusSetDataValidationToolHandler(
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
 
-  const toolName = "obsidian_sheet_plus_set_data_validation";
+  const toolName = "set_data_validation";
   const toolDescription = "Sets data validation for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
