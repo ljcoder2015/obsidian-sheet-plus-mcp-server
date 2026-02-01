@@ -26,7 +26,7 @@ export async function registerObsidianSheetPlusClearAllTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_clear_all";
+  const toolName = "clear_all";
   const toolDescription = "Clears all content and format for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

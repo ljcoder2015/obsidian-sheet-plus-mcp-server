@@ -26,7 +26,7 @@ export async function registerObsidianSheetPlusClearFormatTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_clear_format";
+  const toolName = "clear_format";
   const toolDescription = "Clears format for a range of cells";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

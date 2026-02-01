@@ -30,7 +30,7 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_set_sheet_data";
+  const toolName = "set_sheet_data";
   const toolDescription = "Sets data to a specific sheet";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({

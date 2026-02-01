@@ -26,7 +26,7 @@ export async function registerObsidianSheetPlusGetSheetDataTool(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "obsidian_sheet_plus_get_sheet_data";
+  const toolName = "get_sheet_data";
   const toolDescription = "Gets data from a specific sheet";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
