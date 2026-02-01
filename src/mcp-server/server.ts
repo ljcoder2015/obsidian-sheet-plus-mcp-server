@@ -31,12 +31,8 @@ import { registerObsidianSheetPlusSetDataValidationToolHandler } from "./tools/o
 import { registerObsidianSheetPlusCreateSheetToolHandler } from "./tools/obsidianSheetPlusCreateSheetTool/index.js";
 import { registerObsidianSheetPlusSetFormulaToolHandler } from "./tools/obsidianSheetPlusSetFormulaTool/index.js";
 import { registerObsidianSheetPlusSetRangeStyleToolHandler } from "./tools/obsidianSheetPlusSetRangeStyleTool/index.js";
-import { registerObsidianSheetPlusSetFilterToolHandler } from "./tools/obsidianSheetPlusSetFilterTool/index.js";
-import { registerObsidianSheetPlusClearFilterToolHandler } from "./tools/obsidianSheetPlusClearFilterTool/index.js";
 import { registerObsidianSheetPlusClearContentsToolHandler } from "./tools/obsidianSheetPlusClearContentsTool/index.js";
 import { registerObsidianSheetPlusClearFormatToolHandler } from "./tools/obsidianSheetPlusClearFormatTool/index.js";
-import { registerObsidianSheetPlusClearCommentsToolHandler } from "./tools/obsidianSheetPlusClearCommentsTool/index.js";
-import { registerObsidianSheetPlusClearHyperlinksToolHandler } from "./tools/obsidianSheetPlusClearHyperlinksTool/index.js";
 import { registerObsidianSheetPlusClearAllToolHandler } from "./tools/obsidianSheetPlusClearAllTool/index.js";
 import { registerObsidianSheetPlusClearDataValidationToolHandler } from "./tools/obsidianSheetPlusClearDataValidationTool/index.js";
 import { registerObsidianSheetPlusCheckStatusToolHandler } from "./tools/obsidianSheetPlusCheckStatusTool/index.js";
@@ -117,12 +113,8 @@ async function createMcpServerInstance(
     await registerObsidianSheetPlusCreateSheetToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusSetFormulaToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusSetRangeStyleToolHandler(server, obsidianSheetPlusService);
-    await registerObsidianSheetPlusSetFilterToolHandler(server, obsidianSheetPlusService);
-    await registerObsidianSheetPlusClearFilterToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearContentsToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearFormatToolHandler(server, obsidianSheetPlusService);
-    await registerObsidianSheetPlusClearCommentsToolHandler(server, obsidianSheetPlusService);
-    await registerObsidianSheetPlusClearHyperlinksToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearAllToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearDataValidationToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusCheckStatusToolHandler(server, obsidianSheetPlusService);
