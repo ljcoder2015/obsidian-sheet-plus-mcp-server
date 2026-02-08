@@ -33,6 +33,16 @@ import {
   ClearHyperlinksParams,
   ClearAllParams,
   ClearDataValidationParams,
+  InsertRowsParams,
+  DeleteRowsParams,
+  InsertColumnsParams,
+  DeleteColumnsParams,
+  AutoResizeRowsParams,
+  AutoResizeColumnsParams,
+  GetMaxRowsParams,
+  GetMaxColumnsParams,
+  MergeCellsParams,
+  UnmergeCellsParams,
 } from "./types.js";
 
 export class ObsidianSheetPlusRestApiService {
@@ -533,6 +543,186 @@ export class ObsidianSheetPlusRestApiService {
       },
       context,
       "clearAllConditionalFormatting",
+    );
+  }
+
+  /**
+   * Inserts rows at a specified position.
+   * @param params - Parameters for inserting rows.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async insertRows(params: InsertRowsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/insert_rows",
+        data: params,
+      },
+      context,
+      "insertRows",
+    );
+  }
+
+  /**
+   * Deletes rows at a specified position.
+   * @param params - Parameters for deleting rows.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async deleteRows(params: DeleteRowsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/delete_rows",
+        data: params,
+      },
+      context,
+      "deleteRows",
+    );
+  }
+
+  /**
+   * Inserts columns at a specified position.
+   * @param params - Parameters for inserting columns.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async insertColumns(params: InsertColumnsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/insert_columns",
+        data: params,
+      },
+      context,
+      "insertColumns",
+    );
+  }
+
+  /**
+   * Deletes columns at a specified position.
+   * @param params - Parameters for deleting columns.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async deleteColumns(params: DeleteColumnsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/delete_columns",
+        data: params,
+      },
+      context,
+      "deleteColumns",
+    );
+  }
+
+  /**
+   * Auto resizes multiple rows to fit their content.
+   * @param params - Parameters for auto resizing rows.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async autoResizeRows(params: AutoResizeRowsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/auto_resize_rows",
+        data: params,
+      },
+      context,
+      "autoResizeRows",
+    );
+  }
+
+  /**
+   * Auto resizes multiple columns to fit their content.
+   * @param params - Parameters for auto resizing columns.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async autoResizeColumns(params: AutoResizeColumnsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/auto_resize_columns",
+        data: params,
+      },
+      context,
+      "autoResizeColumns",
+    );
+  }
+
+  /**
+   * Gets the maximum number of rows in a sheet.
+   * @param params - Parameters for getting max rows.
+   * @param context - Request context.
+   * @returns The maximum number of rows.
+   */
+  async getMaxRows(params: GetMaxRowsParams, context: RequestContext): Promise<{ success: boolean; data: any; message: string }> {
+    return this._request<{ success: boolean; data: any; message: string }>(
+      {
+        method: "GET",
+        url: "/get_max_rows",
+        params: { sheetName: params.sheetName },
+      },
+      context,
+      "getMaxRows",
+    );
+  }
+
+  /**
+   * Gets the maximum number of columns in a sheet.
+   * @param params - Parameters for getting max columns.
+   * @param context - Request context.
+   * @returns The maximum number of columns.
+   */
+  async getMaxColumns(params: GetMaxColumnsParams, context: RequestContext): Promise<{ success: boolean; data: any; message: string }> {
+    return this._request<{ success: boolean; data: any; message: string }>(
+      {
+        method: "GET",
+        url: "/get_max_columns",
+        params: { sheetName: params.sheetName },
+      },
+      context,
+      "getMaxColumns",
+    );
+  }
+
+  /**
+   * Merges cells in a specified range.
+   * @param params - Parameters for merging cells.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async mergeCells(params: MergeCellsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/merge_cells",
+        data: params,
+      },
+      context,
+      "mergeCells",
+    );
+  }
+
+  /**
+   * Unmerges cells in a specified range.
+   * @param params - Parameters for unmerging cells.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async unmergeCells(params: UnmergeCellsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/unmerge_cells",
+        data: params,
+      },
+      context,
+      "unmergeCells",
     );
   }
 }

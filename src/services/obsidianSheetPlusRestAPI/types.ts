@@ -199,3 +199,87 @@ export interface RemoveConditionalFormattingParams {
 export interface ClearAllConditionalFormattingParams {
   sheetName?: string;
 }
+
+/**
+ * Parameters for inserting rows.
+ */
+export interface InsertRowsParams {
+  sheetName?: string;
+  rowIndex: number;
+  numberOfRows: number;
+}
+
+/**
+ * Parameters for deleting rows.
+ */
+export interface DeleteRowsParams {
+  sheetName?: string;
+  rowIndex: number;
+  numberOfRows: number;
+}
+
+/**
+ * Parameters for inserting columns.
+ */
+export interface InsertColumnsParams {
+  sheetName?: string;
+  columnIndex: number;
+  numberOfColumns: number;
+}
+
+/**
+ * Parameters for deleting columns.
+ */
+export interface DeleteColumnsParams {
+  sheetName?: string;
+  columnIndex: number;
+  numberOfColumns: number;
+}
+
+/**
+ * Parameters for auto resizing rows.
+ */
+export interface AutoResizeRowsParams {
+  sheetName?: string;
+  startRow: number;
+  numberOfRows: number;
+}
+
+/**
+ * Parameters for auto resizing columns.
+ */
+export interface AutoResizeColumnsParams {
+  sheetName?: string;
+  startColumn: number;
+  numberOfColumns: number;
+}
+
+/**
+ * Parameters for getting max rows.
+ */
+export interface GetMaxRowsParams {
+  sheetName?: string;
+}
+
+/**
+ * Parameters for getting max columns.
+ */
+export interface GetMaxColumnsParams {
+  sheetName?: string;
+}
+
+/**
+ * Parameters for merging cells.
+ */
+export interface MergeCellsParams {
+  sheetName?: string;
+  range: string;
+}
+
+/**
+ * Parameters for unmerging cells.
+ */
+export interface UnmergeCellsParams {
+  sheetName?: string;
+  range: string;
+}
