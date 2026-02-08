@@ -39,10 +39,12 @@ export async function registerObsidianSheetPlusDeleteColumnsTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusDeleteColumnsInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusDeleteColumnsInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

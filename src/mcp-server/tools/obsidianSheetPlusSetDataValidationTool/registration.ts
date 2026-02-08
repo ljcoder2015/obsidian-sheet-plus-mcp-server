@@ -47,10 +47,12 @@ export async function registerObsidianSheetPlusSetDataValidationToolHandler(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusSetDataValidationInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusSetDataValidationInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

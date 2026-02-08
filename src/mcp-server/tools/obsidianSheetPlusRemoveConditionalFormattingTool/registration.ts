@@ -40,10 +40,12 @@ export async function registerObsidianSheetPlusRemoveConditionalFormattingToolHa
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusRemoveConditionalFormattingInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusRemoveConditionalFormattingInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
