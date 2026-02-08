@@ -481,4 +481,58 @@ export class ObsidianSheetPlusRestApiService {
       "clearDataValidation",
     );
   }
+
+  /**
+   * Adds conditional formatting to a range of cells.
+   * @param params - Parameters for adding conditional formatting.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async addConditionalFormatting(params: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/add_conditional_formatting",
+        data: params,
+      },
+      context,
+      "addConditionalFormatting",
+    );
+  }
+
+  /**
+   * Removes conditional formatting from a range of cells.
+   * @param params - Parameters for removing conditional formatting.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async removeConditionalFormatting(params: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/remove_conditional_formatting",
+        data: params,
+      },
+      context,
+      "removeConditionalFormatting",
+    );
+  }
+
+  /**
+   * Clears all conditional formatting from a sheet.
+   * @param params - Parameters for clearing all conditional formatting.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async clearAllConditionalFormatting(params: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/clear_all_conditional_formatting",
+        data: params,
+      },
+      context,
+      "clearAllConditionalFormatting",
+    );
+  }
 }

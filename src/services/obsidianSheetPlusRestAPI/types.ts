@@ -173,3 +173,29 @@ export interface ClearDataValidationParams {
   sheetName: string;
   range: string;
 }
+
+/**
+ * Parameters for adding conditional formatting.
+ */
+export interface AddConditionalFormattingParams {
+  sheetName?: string;
+  range: string;
+  ruleType: string;
+  condition: any;
+  format?: any;
+}
+
+/**
+ * Parameters for removing conditional formatting.
+ */
+export interface RemoveConditionalFormattingParams {
+  sheetName?: string;
+  range: string;
+}
+
+/**
+ * Parameters for clearing all conditional formatting.
+ */
+export interface ClearAllConditionalFormattingParams {
+  sheetName?: string;
+}

@@ -42,8 +42,8 @@ export async function registerObsidianSheetPlusClearContentsTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusClearContentsInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusClearContentsInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusClearContentsRequest",
@@ -60,7 +60,7 @@ export async function registerObsidianSheetPlusClearContentsTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

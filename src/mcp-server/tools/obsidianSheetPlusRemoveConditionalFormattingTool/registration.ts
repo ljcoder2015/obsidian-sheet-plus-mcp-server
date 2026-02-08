@@ -1,7 +1,7 @@
 /**
- * @module ObsidianSheetPlusGetWorkbookDataTool Registration
+ * @module ObsidianSheetPlusRemoveConditionalFormattingTool Registration
  * @description
- * Registers the Obsidian Sheet Plus Get Workbook Data tool with the MCP server.
+ * Registers the Obsidian Sheet Plus Remove Conditional Formatting tool with the MCP server.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -14,24 +14,26 @@ import {
   requestContextService,
 } from "../../../utils/index.js";
 import { z } from "zod";
-import { getWorkbookData } from "./logic.js";
+import { removeConditionalFormatting } from "./logic.js";
 
 // Define input schema using Zod
-const ObsidianSheetPlusGetWorkbookDataInputSchema = z.object({
-  // No parameters required for this tool
+const ObsidianSheetPlusRemoveConditionalFormattingInputSchema = z.object({
+  sheetName: z.string().optional().describe("The name of the sheet to remove conditional formatting from"),
+  range: z.string().describe("The cell range to remove conditional formatting from, e.g., A1:B10"),
 });
 
-export async function registerObsidianSheetPlusGetWorkbookDataTool(
+export async function registerObsidianSheetPlusRemoveConditionalFormattingToolHandler(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "get_workbook_data";
-  const toolDescription = "Gets full workbook data including all sheets and plugin data";
+
+  const toolName = "remove_conditional_formatting";
+  const toolDescription = "Remove conditional formatting rules from a range";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
-    operation: "RegisterObsidianSheetPlusGetWorkbookDataTool",
+    operation: "RegisterObsidianSheetPlusRemoveConditionalFormattingTool",
     toolName: toolName,
-    module: "ObsidianSheetPlusGetWorkbookDataRegistration",
+    module: "ObsidianSheetPlusRemoveConditionalFormattingRegistration",
   });
 
   logger.info(`Attempting to register tool: ${toolName}`, registrationContext);
@@ -41,11 +43,11 @@ export async function registerObsidianSheetPlusGetWorkbookDataTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusGetWorkbookDataInputSchema as any,
+        ObsidianSheetPlusRemoveConditionalFormattingInputSchema as any,
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
-            operation: "HandleObsidianSheetPlusGetWorkbookDataRequest",
+            operation: "HandleObsidianSheetPlusRemoveConditionalFormattingRequest",
             toolName: toolName,
             params: params,
           });
@@ -53,7 +55,7 @@ export async function registerObsidianSheetPlusGetWorkbookDataTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await getWorkbookData(obsidianSheetPlusService, logger, handlerContext);
+              const response = await removeConditionalFormatting(obsidianSheetPlusService, params, logger, handlerContext);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {

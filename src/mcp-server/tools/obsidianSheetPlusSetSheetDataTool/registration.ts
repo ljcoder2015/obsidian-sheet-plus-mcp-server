@@ -20,9 +20,7 @@ import type { SetSheetDataParams } from "../../../services/obsidianSheetPlusRest
 // Define input schema using Zod
 const ObsidianSheetPlusSetSheetDataInputSchema = z.object({
   sheetName: z.string().optional().describe("The name of the sheet to set data to"),
-  values: z.array(
-    z.array(z.any().describe("The cell value"))
-  ).describe("The cell data to set"),
+  values: z.any().describe("The cell data to set"),
   range: z.string().describe("The data range"),
 });
 
@@ -46,8 +44,8 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusSetSheetDataInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusSetSheetDataInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusSetSheetDataRequest",
@@ -64,7 +62,7 @@ export async function registerObsidianSheetPlusSetSheetDataTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

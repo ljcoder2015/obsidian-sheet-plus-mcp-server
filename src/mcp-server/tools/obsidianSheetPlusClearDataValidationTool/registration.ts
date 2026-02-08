@@ -42,8 +42,8 @@ export async function registerObsidianSheetPlusClearDataValidationTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusClearDataValidationInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusClearDataValidationInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusClearDataValidationRequest",
@@ -60,7 +60,7 @@ export async function registerObsidianSheetPlusClearDataValidationTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

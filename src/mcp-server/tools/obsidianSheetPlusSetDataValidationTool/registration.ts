@@ -50,8 +50,8 @@ export async function registerObsidianSheetPlusSetDataValidationToolHandler(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusSetDataValidationInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusSetDataValidationInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusSetDataValidationRequest",
@@ -62,13 +62,13 @@ export async function registerObsidianSheetPlusSetDataValidationToolHandler(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await setDataValidation(obsidianSheetPlusService, params, logger, handlerContext);
+              const response = await setDataValidation(obsidianSheetPlusService, params as any, logger, handlerContext);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

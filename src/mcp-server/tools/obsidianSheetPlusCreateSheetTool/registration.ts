@@ -41,8 +41,8 @@ export async function registerObsidianSheetPlusCreateSheetTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusCreateSheetInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusCreateSheetInputSchema.shape as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusCreateSheetRequest",
@@ -59,7 +59,7 @@ export async function registerObsidianSheetPlusCreateSheetTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

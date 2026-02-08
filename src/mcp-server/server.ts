@@ -35,6 +35,9 @@ import { registerObsidianSheetPlusClearContentsToolHandler } from "./tools/obsid
 import { registerObsidianSheetPlusClearFormatToolHandler } from "./tools/obsidianSheetPlusClearFormatTool/index.js";
 import { registerObsidianSheetPlusClearAllToolHandler } from "./tools/obsidianSheetPlusClearAllTool/index.js";
 import { registerObsidianSheetPlusClearDataValidationToolHandler } from "./tools/obsidianSheetPlusClearDataValidationTool/index.js";
+import { registerObsidianSheetPlusAddConditionalFormattingToolHandler } from "./tools/obsidianSheetPlusAddConditionalFormattingTool/index.js";
+import { registerObsidianSheetPlusRemoveConditionalFormattingToolHandler } from "./tools/obsidianSheetPlusRemoveConditionalFormattingTool/index.js";
+import { registerObsidianSheetPlusClearAllConditionalFormattingToolHandler } from "./tools/obsidianSheetPlusClearAllConditionalFormattingTool/index.js";
 import { registerObsidianSheetPlusCheckStatusToolHandler } from "./tools/obsidianSheetPlusCheckStatusTool/index.js";
 // Import transport setup functions.
 import { startHttpTransport } from "./transports/httpTransport.js";
@@ -117,6 +120,9 @@ async function createMcpServerInstance(
     await registerObsidianSheetPlusClearFormatToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearAllToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearDataValidationToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusAddConditionalFormattingToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusRemoveConditionalFormattingToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusClearAllConditionalFormattingToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusCheckStatusToolHandler(server, obsidianSheetPlusService);
     logger.debug("Obsidian Sheet Plus tools registered successfully", context);
 
