@@ -1,4 +1,4 @@
-import { ChatCompletionMessageParam, ChatCompletionMessageFunctionToolCall, ChatCompletionMessageToolCall } from "openai/resources/chat/completions";
+import { ChatCompletionMessageParam, ChatCompletionMessageToolCall } from "openai/resources/chat/completions";
 import { encoding_for_model, Tiktoken, TiktokenModel } from "tiktoken";
 import { BaseErrorCode, McpError } from "../../types-global/errors.js";
 // Import utils from main barrel file (ErrorHandler, logger, RequestContext from ../internal/*)
@@ -8,7 +8,7 @@ import { ErrorHandler, logger, RequestContext } from "../index.js";
 const TOKENIZATION_MODEL: TiktokenModel = "gpt-4o"; // Note this is strictly for token counting, not model used for inference
 
 // Type guard function to check if a tool call is a function tool call
-function isFunctionToolCall(toolCall: ChatCompletionMessageToolCall): toolCall is ChatCompletionMessageFunctionToolCall {
+function isFunctionToolCall(toolCall: ChatCompletionMessageToolCall): toolCall is ChatCompletionMessageToolCall & { type: 'function'; function: { name: string; arguments: string } } {
   return toolCall.type === 'function';
 }
 
