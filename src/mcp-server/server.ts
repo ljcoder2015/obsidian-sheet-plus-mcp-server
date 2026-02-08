@@ -39,6 +39,16 @@ import { registerObsidianSheetPlusAddConditionalFormattingToolHandler } from "./
 import { registerObsidianSheetPlusRemoveConditionalFormattingToolHandler } from "./tools/obsidianSheetPlusRemoveConditionalFormattingTool/index.js";
 import { registerObsidianSheetPlusClearAllConditionalFormattingToolHandler } from "./tools/obsidianSheetPlusClearAllConditionalFormattingTool/index.js";
 import { registerObsidianSheetPlusCheckStatusToolHandler } from "./tools/obsidianSheetPlusCheckStatusTool/index.js";
+import { registerObsidianSheetPlusInsertRowsToolHandler } from "./tools/obsidianSheetPlusInsertRowsTool/index.js";
+import { registerObsidianSheetPlusDeleteRowsToolHandler } from "./tools/obsidianSheetPlusDeleteRowsTool/index.js";
+import { registerObsidianSheetPlusInsertColumnsToolHandler } from "./tools/obsidianSheetPlusInsertColumnsTool/index.js";
+import { registerObsidianSheetPlusDeleteColumnsToolHandler } from "./tools/obsidianSheetPlusDeleteColumnsTool/index.js";
+import { registerObsidianSheetPlusAutoResizeRowsToolHandler } from "./tools/obsidianSheetPlusAutoResizeRowsTool/index.js";
+import { registerObsidianSheetPlusAutoResizeColumnsToolHandler } from "./tools/obsidianSheetPlusAutoResizeColumnsTool/index.js";
+import { registerObsidianSheetPlusGetMaxRowsToolHandler } from "./tools/obsidianSheetPlusGetMaxRowsTool/index.js";
+import { registerObsidianSheetPlusGetMaxColumnsToolHandler } from "./tools/obsidianSheetPlusGetMaxColumnsTool/index.js";
+import { registerObsidianSheetPlusMergeCellsToolHandler } from "./tools/obsidianSheetPlusMergeCellsTool/index.js";
+import { registerObsidianSheetPlusUnmergeCellsToolHandler } from "./tools/obsidianSheetPlusUnmergeCellsTool/index.js";
 // Import transport setup functions.
 import { startHttpTransport } from "./transports/httpTransport.js";
 import { connectStdioTransport } from "./transports/stdioTransport.js";
@@ -124,6 +134,16 @@ async function createMcpServerInstance(
     await registerObsidianSheetPlusRemoveConditionalFormattingToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusClearAllConditionalFormattingToolHandler(server, obsidianSheetPlusService);
     await registerObsidianSheetPlusCheckStatusToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusInsertRowsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusDeleteRowsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusInsertColumnsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusDeleteColumnsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusAutoResizeRowsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusAutoResizeColumnsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusGetMaxRowsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusGetMaxColumnsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusMergeCellsToolHandler(server, obsidianSheetPlusService);
+    await registerObsidianSheetPlusUnmergeCellsToolHandler(server, obsidianSheetPlusService);
     logger.debug("Obsidian Sheet Plus tools registered successfully", context);
 
     logger.info("Resources and tools registered successfully", context);
