@@ -1,6 +1,6 @@
 {
   "name": "obsidian-sheet-plus-mcp-server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Obsidian Sheet Plus MCP (Model Context Protocol) server that enables AI agents and development tools to interact with Obsidian spreadsheets. It provides a comprehensive suite of tools for reading, writing, and managing sheet data, acting as a bridge to the Obsidian Sheet Plus plugin.",
   "main": "dist/index.js",
   "files": [
