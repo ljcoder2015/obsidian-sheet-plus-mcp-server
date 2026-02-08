@@ -42,8 +42,8 @@ export async function registerObsidianSheetPlusGetSheetDataTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusGetSheetDataInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusGetSheetDataInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusGetSheetDataRequest",
@@ -60,7 +60,7 @@ export async function registerObsidianSheetPlusGetSheetDataTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

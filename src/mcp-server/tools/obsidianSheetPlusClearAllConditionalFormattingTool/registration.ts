@@ -1,7 +1,7 @@
 /**
- * @module ObsidianSheetPlusGetWorkbookDataTool Registration
+ * @module ObsidianSheetPlusClearAllConditionalFormattingTool Registration
  * @description
- * Registers the Obsidian Sheet Plus Get Workbook Data tool with the MCP server.
+ * Registers the Obsidian Sheet Plus Clear All Conditional Formatting tool with the MCP server.
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -14,24 +14,25 @@ import {
   requestContextService,
 } from "../../../utils/index.js";
 import { z } from "zod";
-import { getWorkbookData } from "./logic.js";
+import { clearAllConditionalFormatting } from "./logic.js";
 
 // Define input schema using Zod
-const ObsidianSheetPlusGetWorkbookDataInputSchema = z.object({
-  // No parameters required for this tool
+const ObsidianSheetPlusClearAllConditionalFormattingInputSchema = z.object({
+  sheetName: z.string().optional().describe("The name of the sheet to clear all conditional formatting from"),
 });
 
-export async function registerObsidianSheetPlusGetWorkbookDataTool(
+export async function registerObsidianSheetPlusClearAllConditionalFormattingToolHandler(
   server: McpServer,
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
 ): Promise<void> {
-  const toolName = "get_workbook_data";
-  const toolDescription = "Gets full workbook data including all sheets and plugin data";
+
+  const toolName = "clear_all_conditional_formatting";
+  const toolDescription = "Clear all conditional formatting rules from the entire sheet";
 
   const registrationContext: RequestContext = requestContextService.createRequestContext({
-    operation: "RegisterObsidianSheetPlusGetWorkbookDataTool",
+    operation: "RegisterObsidianSheetPlusClearAllConditionalFormattingTool",
     toolName: toolName,
-    module: "ObsidianSheetPlusGetWorkbookDataRegistration",
+    module: "ObsidianSheetPlusClearAllConditionalFormattingRegistration",
   });
 
   logger.info(`Attempting to register tool: ${toolName}`, registrationContext);
@@ -41,11 +42,11 @@ export async function registerObsidianSheetPlusGetWorkbookDataTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusGetWorkbookDataInputSchema as any,
+        ObsidianSheetPlusClearAllConditionalFormattingInputSchema as any,
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
-            operation: "HandleObsidianSheetPlusGetWorkbookDataRequest",
+            operation: "HandleObsidianSheetPlusClearAllConditionalFormattingRequest",
             toolName: toolName,
             params: params,
           });
@@ -53,7 +54,7 @@ export async function registerObsidianSheetPlusGetWorkbookDataTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await getWorkbookData(obsidianSheetPlusService, logger, handlerContext);
+              const response = await clearAllConditionalFormatting(obsidianSheetPlusService, params, logger, handlerContext);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {

@@ -43,8 +43,8 @@ export async function registerObsidianSheetPlusSetFormulaTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusSetFormulaInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusSetFormulaInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusSetFormulaRequest",
@@ -61,7 +61,7 @@ export async function registerObsidianSheetPlusSetFormulaTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

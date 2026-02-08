@@ -20,27 +20,7 @@ import { setRangeStyle } from "./logic.js";
 const ObsidianSheetPlusSetRangeStyleInputSchema = z.object({
   sheetName: z.string().optional().describe("The name of the sheet"),
   range: z.string().describe("The range of cells to style (e.g., 'A1:B2')"),
-  style: z.object({
-    backgroundColor: z.string().optional().describe("The background color (hex format)"),
-    fontColor: z.string().optional().describe("The font color (hex format)"),
-    fontSize: z.number().optional().describe("The font size"),
-    fontFamily: z.string().optional().describe("The font family"),
-    bold: z.boolean().optional().describe("Whether to set bold text"),
-    fontLine: z.enum(["none","single", "double"]).optional().describe("The font line style"),
-    fontWeight: z.enum(["normal", "bold"]).optional().describe("The font weight"),
-    fontStyle: z.enum(["normal", "italic"]).optional().describe("The font style"),
-    textDecoration: z.enum(["none", "underline", "line-through"]).optional().describe("The text decoration"),
-    horizontalAlignment: z.enum(["left", "center", "right"]).optional().describe("Horizontal alignment"),
-    verticalAlignment: z.enum(["top", "center", "bottom"]).optional().describe("Vertical alignment"),
-    textRotation: z.number().optional().describe("The text rotation angle"),
-    wrap: z.boolean().optional().describe("The wrap strategy"),
-    border: z.object({
-      type: z.enum(['top', 'bottom', 'left', 'right', 'none', 'all', 'outside', 'inside', 'horizontal', 'vertical', 'tlbr', 'tlbc_tlmr', 'tlbr_tlbc_tlmr', 'bl_tr', 'mltr_bctr']).optional().describe("The border type"),
-      style: z.number().optional().describe("The border style, e.g., NONE = 0, THIN = 1, HAIR = 2, DOTTED = 3, DASHED = 4, DASH_DOT = 5, DASH_DOT_DOT = 6, DOUBLE = 7, MEDIUM = 8, MEDIUM_DASHED = 9, MEDIUM_DASH_DOT = 10, MEDIUM_DASH_DOT_DOT = 11, SLANT_DASH_DOT = 12, THICK = 13"),
-                  
-      color: z.string().optional().describe("The border color (hex format)"),
-    }).optional().describe("The border object"),
-  }).describe("The style object"),
+  style: z.record(z.any()).describe("The style object"),
 });
 
 export async function registerObsidianSheetPlusSetRangeStyleTool(
@@ -63,8 +43,8 @@ export async function registerObsidianSheetPlusSetRangeStyleTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusSetRangeStyleInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusSetRangeStyleInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusSetRangeStyleRequest",
@@ -75,13 +55,13 @@ export async function registerObsidianSheetPlusSetRangeStyleTool(
 
           return await ErrorHandler.tryCatch(
             async () => {
-              const response = await setRangeStyle(obsidianSheetPlusService, logger, handlerContext, params);
+              const response = await setRangeStyle(obsidianSheetPlusService, logger, handlerContext, params as any);
               logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

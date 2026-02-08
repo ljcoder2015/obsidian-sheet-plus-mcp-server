@@ -42,8 +42,8 @@ export async function registerObsidianSheetPlusClearFormatTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusClearFormatInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusClearFormatInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusClearFormatRequest",
@@ -60,7 +60,7 @@ export async function registerObsidianSheetPlusClearFormatTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],

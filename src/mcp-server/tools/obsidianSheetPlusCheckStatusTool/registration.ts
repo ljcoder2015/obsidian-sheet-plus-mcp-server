@@ -41,8 +41,8 @@ export async function registerObsidianSheetPlusCheckStatusTool(
       server.tool(
         toolName,
         toolDescription,
-        ObsidianSheetPlusCheckStatusInputSchema.shape,
-        async (params) => {
+        ObsidianSheetPlusCheckStatusInputSchema as any,
+        async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
             operation: "HandleObsidianSheetPlusCheckStatusRequest",
@@ -59,7 +59,7 @@ export async function registerObsidianSheetPlusCheckStatusTool(
               return {
                 content: [
                   {
-                    type: "text",
+                    type: "text" as const,
                     text: JSON.stringify(response, null, 2),
                   },
                 ],
