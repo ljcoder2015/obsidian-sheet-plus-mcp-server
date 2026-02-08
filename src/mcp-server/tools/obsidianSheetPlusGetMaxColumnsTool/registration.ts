@@ -37,10 +37,12 @@ export async function registerObsidianSheetPlusGetMaxColumnsTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusGetMaxColumnsInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusGetMaxColumnsInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

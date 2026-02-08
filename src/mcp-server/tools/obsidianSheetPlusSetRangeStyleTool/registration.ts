@@ -40,10 +40,12 @@ export async function registerObsidianSheetPlusSetRangeStyleTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusSetRangeStyleInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusSetRangeStyleInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

@@ -39,10 +39,12 @@ export async function registerObsidianSheetPlusGetSheetDataTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusGetSheetDataInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusGetSheetDataInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

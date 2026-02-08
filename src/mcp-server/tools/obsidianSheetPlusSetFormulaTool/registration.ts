@@ -40,10 +40,12 @@ export async function registerObsidianSheetPlusSetFormulaTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusSetFormulaInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusSetFormulaInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

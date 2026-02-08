@@ -39,10 +39,12 @@ export async function registerObsidianSheetPlusAutoResizeColumnsTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusAutoResizeColumnsInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusAutoResizeColumnsInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

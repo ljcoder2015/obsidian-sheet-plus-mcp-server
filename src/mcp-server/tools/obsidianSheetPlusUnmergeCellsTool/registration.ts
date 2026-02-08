@@ -38,10 +38,12 @@ export async function registerObsidianSheetPlusUnmergeCellsTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusUnmergeCellsInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusUnmergeCellsInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

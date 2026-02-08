@@ -39,10 +39,12 @@ export async function registerObsidianSheetPlusClearFormatTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusClearFormatInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusClearFormatInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,

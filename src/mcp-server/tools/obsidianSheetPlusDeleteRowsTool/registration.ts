@@ -39,10 +39,12 @@ export async function registerObsidianSheetPlusDeleteRowsTool(
 
   await ErrorHandler.tryCatch(
     async () => {
-      server.tool(
+      server.registerTool(
         toolName,
-        toolDescription,
-        ObsidianSheetPlusDeleteRowsInputSchema as any,
+        {
+          description: toolDescription,
+          inputSchema: ObsidianSheetPlusDeleteRowsInputSchema.shape as any,
+        },
         async (params: any) => {
           const handlerContext: RequestContext = requestContextService.createRequestContext({
             parentContext: registrationContext,
