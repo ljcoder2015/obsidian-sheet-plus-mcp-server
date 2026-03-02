@@ -8,21 +8,24 @@ import { ObsidianSheetPlusRestApiService } from "../../../services/obsidianSheet
 
 export async function removeConditionalFormatting(
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
-  params: {
-    sheetName?: string;
-    range: string;
-  },
+  sheetName: string | undefined,
+  range: string,
   logger: any,
   requestContext: any,
 ) {
   try {
-    logger.info(`Removing conditional formatting for sheet: ${params.sheetName}, range: ${params.range}`, requestContext);
-    const response = await obsidianSheetPlusService.removeConditionalFormatting(params, requestContext);
-    logger.info(`Removed conditional formatting successfully for sheet: ${params.sheetName}`, requestContext);
+    const targetSheet = sheetName || "active sheet";
+    logger.info(`Removing conditional formatting from range ${range} in sheet: ${targetSheet}`, requestContext);
+    const response = await obsidianSheetPlusService.removeConditionalFormatting(sheetName, range, requestContext);
+    logger.info(`Conditional formatting removed successfully from range ${range} in sheet: ${targetSheet}`, requestContext);
     
-    return response;
+    return {
+      success: true,
+      data: response,
+    };
   } catch (error) {
-    logger.error(`Error removing conditional formatting for sheet: ${params.sheetName}`, error, requestContext);
+    const targetSheet = sheetName || "active sheet";
+    logger.error(`Error removing conditional formatting from range ${range} in sheet: ${targetSheet}`, error, requestContext);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

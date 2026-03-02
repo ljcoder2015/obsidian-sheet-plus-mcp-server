@@ -33,16 +33,6 @@ import {
   ClearHyperlinksParams,
   ClearAllParams,
   ClearDataValidationParams,
-  InsertRowsParams,
-  DeleteRowsParams,
-  InsertColumnsParams,
-  DeleteColumnsParams,
-  AutoResizeRowsParams,
-  AutoResizeColumnsParams,
-  GetMaxRowsParams,
-  GetMaxColumnsParams,
-  MergeCellsParams,
-  UnmergeCellsParams,
 } from "./types.js";
 
 export class ObsidianSheetPlusRestApiService {
@@ -493,17 +483,98 @@ export class ObsidianSheetPlusRestApiService {
   }
 
   /**
-   * Adds conditional formatting to a range of cells.
-   * @param params - Parameters for adding conditional formatting.
+   * Adds a filter to a range in the sheet.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
+   * @param range - Range to apply filter, e.g., A1:D10.
    * @param context - Request context.
    * @returns A success message.
    */
-  async addConditionalFormatting(params: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+  async addFilter(sheetName: string | undefined, range: string, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/add_filter",
+        data: { sheetName, range },
+      },
+      context,
+      "addFilter",
+    );
+  }
+
+  /**
+   * Removes filter from a range or the entire sheet.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
+   * @param range - Range to remove filter from (optional, if not provided removes all filters from sheet).
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async removeFilter(sheetName: string | undefined, range: string | undefined, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/remove_filter",
+        data: { sheetName, range },
+      },
+      context,
+      "removeFilter",
+    );
+  }
+
+  /**
+   * Gets filter information from a range or the entire sheet.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
+   * @param range - Range to get filter from (optional, if not provided gets all filters from sheet).
+   * @param context - Request context.
+   * @returns Filter information.
+   */
+  async getFilter(sheetName: string | undefined, range: string | undefined, context: RequestContext): Promise<{ success: boolean; data: any; message: string }> {
+    return this._request<{ success: boolean; data: any; message: string }>(
+      {
+        method: "GET",
+        url: "/get_filter",
+        params: { sheetName, range },
+      },
+      context,
+      "getFilter",
+    );
+  }
+
+  /**
+   * Sets filter criteria for an existing filter range.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
+   * @param range - Range with existing filter, e.g., A1:D10.
+   * @param criteria - Filter criteria object.
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async setFilterCriteria(sheetName: string | undefined, range: string, criteria: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+    return this._request<{ success: boolean; message: string }>(
+      {
+        method: "POST",
+        url: "/set_filter_criteria",
+        data: { sheetName, range, criteria },
+      },
+      context,
+      "setFilterCriteria",
+    );
+  }
+
+  /**
+   * Adds conditional formatting rule to a range.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
+   * @param range - Cell range, e.g., A1:B10.
+   * @param ruleType - Type of conditional formatting rule.
+   * @param condition - Condition settings based on rule type.
+   * @param format - Format settings for conditional formatting (optional).
+   * @param context - Request context.
+   * @returns A success message.
+   */
+  async addConditionalFormatting(sheetName: string | undefined, range: string, ruleType: string, condition: any, format: any | undefined, context: RequestContext): Promise<{ success: boolean; message: string }> {
     return this._request<{ success: boolean; message: string }>(
       {
         method: "POST",
         url: "/add_conditional_formatting",
-        data: params,
+        data: { sheetName, range, ruleType, condition, format },
       },
       context,
       "addConditionalFormatting",
@@ -511,17 +582,18 @@ export class ObsidianSheetPlusRestApiService {
   }
 
   /**
-   * Removes conditional formatting from a range of cells.
-   * @param params - Parameters for removing conditional formatting.
+   * Removes conditional formatting rules from a range.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
+   * @param range - Cell range, e.g., A1:B10.
    * @param context - Request context.
    * @returns A success message.
    */
-  async removeConditionalFormatting(params: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+  async removeConditionalFormatting(sheetName: string | undefined, range: string, context: RequestContext): Promise<{ success: boolean; message: string }> {
     return this._request<{ success: boolean; message: string }>(
       {
         method: "POST",
         url: "/remove_conditional_formatting",
-        data: params,
+        data: { sheetName, range },
       },
       context,
       "removeConditionalFormatting",
@@ -529,200 +601,20 @@ export class ObsidianSheetPlusRestApiService {
   }
 
   /**
-   * Clears all conditional formatting from a sheet.
-   * @param params - Parameters for clearing all conditional formatting.
+   * Clears all conditional formatting rules from the entire sheet.
+   * @param sheetName - The name of the sheet (optional, defaults to active sheet).
    * @param context - Request context.
    * @returns A success message.
    */
-  async clearAllConditionalFormatting(params: any, context: RequestContext): Promise<{ success: boolean; message: string }> {
+  async clearAllConditionalFormatting(sheetName: string | undefined, context: RequestContext): Promise<{ success: boolean; message: string }> {
     return this._request<{ success: boolean; message: string }>(
       {
         method: "POST",
         url: "/clear_all_conditional_formatting",
-        data: params,
+        data: { sheetName },
       },
       context,
       "clearAllConditionalFormatting",
-    );
-  }
-
-  /**
-   * Inserts rows at a specified position.
-   * @param params - Parameters for inserting rows.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async insertRows(params: InsertRowsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/insert_rows",
-        data: params,
-      },
-      context,
-      "insertRows",
-    );
-  }
-
-  /**
-   * Deletes rows at a specified position.
-   * @param params - Parameters for deleting rows.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async deleteRows(params: DeleteRowsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/delete_rows",
-        data: params,
-      },
-      context,
-      "deleteRows",
-    );
-  }
-
-  /**
-   * Inserts columns at a specified position.
-   * @param params - Parameters for inserting columns.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async insertColumns(params: InsertColumnsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/insert_columns",
-        data: params,
-      },
-      context,
-      "insertColumns",
-    );
-  }
-
-  /**
-   * Deletes columns at a specified position.
-   * @param params - Parameters for deleting columns.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async deleteColumns(params: DeleteColumnsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/delete_columns",
-        data: params,
-      },
-      context,
-      "deleteColumns",
-    );
-  }
-
-  /**
-   * Auto resizes multiple rows to fit their content.
-   * @param params - Parameters for auto resizing rows.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async autoResizeRows(params: AutoResizeRowsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/auto_resize_rows",
-        data: params,
-      },
-      context,
-      "autoResizeRows",
-    );
-  }
-
-  /**
-   * Auto resizes multiple columns to fit their content.
-   * @param params - Parameters for auto resizing columns.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async autoResizeColumns(params: AutoResizeColumnsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/auto_resize_columns",
-        data: params,
-      },
-      context,
-      "autoResizeColumns",
-    );
-  }
-
-  /**
-   * Gets the maximum number of rows in a sheet.
-   * @param params - Parameters for getting max rows.
-   * @param context - Request context.
-   * @returns The maximum number of rows.
-   */
-  async getMaxRows(params: GetMaxRowsParams, context: RequestContext): Promise<{ success: boolean; data: any; message: string }> {
-    return this._request<{ success: boolean; data: any; message: string }>(
-      {
-        method: "GET",
-        url: "/get_max_rows",
-        params: { sheetName: params.sheetName },
-      },
-      context,
-      "getMaxRows",
-    );
-  }
-
-  /**
-   * Gets the maximum number of columns in a sheet.
-   * @param params - Parameters for getting max columns.
-   * @param context - Request context.
-   * @returns The maximum number of columns.
-   */
-  async getMaxColumns(params: GetMaxColumnsParams, context: RequestContext): Promise<{ success: boolean; data: any; message: string }> {
-    return this._request<{ success: boolean; data: any; message: string }>(
-      {
-        method: "GET",
-        url: "/get_max_columns",
-        params: { sheetName: params.sheetName },
-      },
-      context,
-      "getMaxColumns",
-    );
-  }
-
-  /**
-   * Merges cells in a specified range.
-   * @param params - Parameters for merging cells.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async mergeCells(params: MergeCellsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/merge_cells",
-        data: params,
-      },
-      context,
-      "mergeCells",
-    );
-  }
-
-  /**
-   * Unmerges cells in a specified range.
-   * @param params - Parameters for unmerging cells.
-   * @param context - Request context.
-   * @returns A success message.
-   */
-  async unmergeCells(params: UnmergeCellsParams, context: RequestContext): Promise<{ success: boolean; message: string }> {
-    return this._request<{ success: boolean; message: string }>(
-      {
-        method: "POST",
-        url: "/unmerge_cells",
-        data: params,
-      },
-      context,
-      "unmergeCells",
     );
   }
 }
