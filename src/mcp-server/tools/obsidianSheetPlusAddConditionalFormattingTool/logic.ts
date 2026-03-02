@@ -8,24 +8,50 @@ import { ObsidianSheetPlusRestApiService } from "../../../services/obsidianSheet
 
 export async function addConditionalFormatting(
   obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
-  params: {
-    sheetName?: string;
-    range: string;
-    ruleType: string;
-    condition: any;
-    format?: any;
-  },
+  sheetName: string | undefined,
+  range: string,
+  ruleType: string,
+  condition: any,
+  format: any | undefined,
   logger: any,
   requestContext: any,
 ) {
   try {
-    logger.info(`Adding conditional formatting for sheet: ${params.sheetName}, range: ${params.range}, ruleType: ${params.ruleType}`, requestContext);
-    const response = await obsidianSheetPlusService.addConditionalFormatting(params, requestContext);
-    logger.info(`Added conditional formatting successfully for sheet: ${params.sheetName}`, requestContext);
+    const targetSheet = sheetName || "active sheet";
     
-    return response;
+    // Convert string condition back to object if needed
+    let processedCondition = condition;
+    if (typeof condition === 'string') {
+      try {
+        processedCondition = JSON.parse(condition);
+        logger.info(`Converted string condition to object: ${condition.substring(0, 100)}...`, requestContext);
+      } catch (parseError) {
+        logger.warn(`Failed to parse condition string: ${(parseError as Error).message}`, requestContext);
+      }
+    }
+    
+    // Convert string format back to object if needed
+    let processedFormat = format;
+    if (typeof format === 'string') {
+      try {
+        processedFormat = JSON.parse(format);
+        logger.info(`Converted string format to object: ${format.substring(0, 100)}...`, requestContext);
+      } catch (parseError) {
+        logger.warn(`Failed to parse format string: ${(parseError as Error).message}`, requestContext);
+      }
+    }
+    
+    logger.info(`Adding conditional formatting to range ${range} in sheet: ${targetSheet}`, requestContext);
+    const response = await obsidianSheetPlusService.addConditionalFormatting(sheetName, range, ruleType, processedCondition, processedFormat, requestContext);
+    logger.info(`Conditional formatting added successfully to range ${range} in sheet: ${targetSheet}`, requestContext);
+    
+    return {
+      success: true,
+      data: response,
+    };
   } catch (error) {
-    logger.error(`Error adding conditional formatting for sheet: ${params.sheetName}`, error, requestContext);
+    const targetSheet = sheetName || "active sheet";
+    logger.error(`Error adding conditional formatting to range ${range} in sheet: ${targetSheet}`, error, requestContext);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

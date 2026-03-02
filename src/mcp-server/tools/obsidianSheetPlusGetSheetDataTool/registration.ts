@@ -4,15 +4,8 @@
  * Registers the Obsidian Sheet Plus Get Sheet Data tool with the MCP server.
  */
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ObsidianSheetPlusRestApiService } from "../../../services/obsidianSheetPlusRestAPI/index.js";
 import { BaseErrorCode, McpError } from "../../../types-global/errors.js";
-import {
-  ErrorHandler,
-  logger,
-  RequestContext,
-  requestContextService,
-} from "../../../utils/index.js";
+import { ErrorHandler, logger, requestContextService, } from "../../../utils/index.js";
 import { z } from "zod";
 import { getSheetData } from "./logic.js";
 
@@ -23,13 +16,13 @@ const ObsidianSheetPlusGetSheetDataInputSchema = z.object({
 });
 
 export async function registerObsidianSheetPlusGetSheetDataTool(
-  server: McpServer,
-  obsidianSheetPlusService: ObsidianSheetPlusRestApiService,
+  server: any,
+  obsidianSheetPlusService: any,
 ): Promise<void> {
   const toolName = "get_sheet_data";
   const toolDescription = "Gets data from a specific sheet";
 
-  const registrationContext: RequestContext = requestContextService.createRequestContext({
+  const registrationContext = requestContextService.createRequestContext({
     operation: "RegisterObsidianSheetPlusGetSheetDataTool",
     toolName: toolName,
     module: "ObsidianSheetPlusGetSheetDataRegistration",
@@ -37,68 +30,61 @@ export async function registerObsidianSheetPlusGetSheetDataTool(
 
   logger.info(`Attempting to register tool: ${toolName}`, registrationContext);
 
-  await ErrorHandler.tryCatch(
-    async () => {
-      server.registerTool(
-        toolName,
-        {
-          description: toolDescription,
-          inputSchema: ObsidianSheetPlusGetSheetDataInputSchema.shape as any,
-        },
-        async (params: any) => {
-          const handlerContext: RequestContext = requestContextService.createRequestContext({
-            parentContext: registrationContext,
-            operation: "HandleObsidianSheetPlusGetSheetDataRequest",
-            toolName: toolName,
-            params: params,
-          });
-          logger.debug(`Handling '${toolName}' request`, handlerContext);
+  await ErrorHandler.tryCatch(async () => {
+    server.registerTool(
+      toolName,
+      {
+        description: toolDescription,
+        inputSchema: ObsidianSheetPlusGetSheetDataInputSchema.shape as any,
+      },
+      async (params: z.infer<typeof ObsidianSheetPlusGetSheetDataInputSchema>) => {
+        const handlerContext = requestContextService.createRequestContext({
+          parentContext: registrationContext,
+          operation: "HandleObsidianSheetPlusGetSheetDataRequest",
+          toolName: toolName,
+          params: params,
+        });
 
-          return await ErrorHandler.tryCatch(
-            async () => {
-              const response = await getSheetData(obsidianSheetPlusService, params.sheetName, params.range, logger, handlerContext);
-              logger.debug(`'${toolName}' processed successfully`, handlerContext);
+        logger.debug(`Handling '${toolName}' request`, handlerContext);
 
-              return {
-                content: [
-                  {
-                    type: "text" as const,
-                    text: JSON.stringify(response, null, 2),
-                  },
-                ],
-                isError: false,
-              };
-            },
-            {
-              operation: `processing ${toolName} handler`,
-              context: handlerContext,
-              input: params,
-              errorMapper: (error: unknown) =>
-                new McpError(
-                  error instanceof McpError
-                    ? error.code
-                    : BaseErrorCode.INTERNAL_ERROR,
-                  `Error processing ${toolName} tool: ${error instanceof Error ? error.message : "Unknown error"}`,
-                  { ...handlerContext },
-                ),
-            },
-          );
-        },
-      );
+        return await ErrorHandler.tryCatch(async () => {
+          const response = await getSheetData(obsidianSheetPlusService, params.sheetName, params.range, logger, handlerContext);
+          logger.debug(`'${toolName}' processed successfully`, handlerContext);
 
-      logger.info(`Tool registered successfully: ${toolName}`, registrationContext);
-    },
-    {
-      operation: `registering tool ${toolName}`,
-      context: registrationContext,
-      errorCode: BaseErrorCode.INTERNAL_ERROR,
-      errorMapper: (error: unknown) =>
-        new McpError(
-          error instanceof McpError ? error.code : BaseErrorCode.INTERNAL_ERROR,
-          `Failed to register tool '${toolName}': ${error instanceof Error ? error.message : "Unknown error"}`,
-          { ...registrationContext },
-        ),
-      critical: true,
-    },
-  );
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: JSON.stringify(response, null, 2),
+              },
+            ],
+            isError: false,
+          };
+        }, {
+          operation: `processing ${toolName} handler`,
+          context: handlerContext,
+          input: params,
+          errorMapper: (error) => new McpError(
+            error instanceof McpError
+              ? error.code
+              : BaseErrorCode.INTERNAL_ERROR,
+            `Error processing ${toolName} tool: ${error instanceof Error ? error.message : "Unknown error"}`,
+            { ...handlerContext }
+          ),
+        });
+      }
+    );
+
+    logger.info(`Tool registered successfully: ${toolName}`, registrationContext);
+  }, {
+    operation: `registering tool ${toolName}`,
+    context: registrationContext,
+    errorCode: BaseErrorCode.INTERNAL_ERROR,
+    errorMapper: (error) => new McpError(
+      error instanceof McpError ? error.code : BaseErrorCode.INTERNAL_ERROR,
+      `Failed to register tool '${toolName}': ${error instanceof Error ? error.message : "Unknown error"}`,
+      { ...registrationContext }
+    ),
+    critical: true,
+  });
 }

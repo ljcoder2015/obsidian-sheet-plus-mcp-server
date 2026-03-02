@@ -1,6 +1,6 @@
 {
   "name": "obsidian-sheet-plus-mcp-server",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Obsidian Sheet Plus MCP (Model Context Protocol) server that enables AI agents and development tools to interact with Obsidian spreadsheets. It provides a comprehensive suite of tools for reading, writing, and managing sheet data, acting as a bridge to the Obsidian Sheet Plus plugin.",
   "main": "dist/index.js",
   "files": [
@@ -22,14 +22,13 @@
   },
   "homepage": "https://github.com/ljcoder2015/obsidian-sheet-plus-mcp-server",
   "scripts": {
-    "build": "NODE_OPTIONS=--max-old-space-size=8192 tsc && node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' scripts/make-executable.ts dist/index.js",
+    "build": "tsc && chmod +x dist/index.js 2>/dev/null || true",
     "start": "node dist/index.js",
     "start:stdio": "MCP_LOG_LEVEL=debug MCP_TRANSPORT_TYPE=stdio node dist/index.js",
     "start:http": "MCP_LOG_LEVEL=debug MCP_TRANSPORT_TYPE=http node dist/index.js",
-    "rebuild": "NODE_OPTIONS=--max-old-space-size=8192 node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' scripts/clean.ts && npm run build",
-    "fetch:spec": "NODE_OPTIONS=--max-old-space-size=8192 node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' scripts/fetch-openapi-spec.ts",
-    "docs:generate": "NODE_OPTIONS=--max-old-space-size=8192 typedoc --tsconfig ./tsconfig.typedoc.json",
-    "tree": "NODE_OPTIONS=--max-old-space-size=8192 node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' scripts/tree.ts",
+    "fetch:spec": "npx ts-node scripts/fetch-openapi-spec.ts",
+    "docs:generate": "typedoc --tsconfig ./tsconfig.typedoc.json",
+    "tree": "npx ts-node scripts/tree.ts",
     "format": "prettier --write \"**/*.{ts,js,json,md,html,css}\"",
     "inspect:local": "npx @modelcontextprotocol/inspector node dist/index.js",
     "inspect": "mcp-inspector --config mcp.json --server obsidian-sheet-plus-mcp-server-stdio",
