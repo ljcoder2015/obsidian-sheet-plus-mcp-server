@@ -54,7 +54,7 @@
     "sanitize-html": "2.17.0",
     "tiktoken": "1.0.21",
     "ts-node": "10.9.2",
-    "typescript": "5.8.3",
+    "typescript": "5.9.3",
     "validator": "13.15.15",
     "winston": "3.17.0",
     "winston-transport": "4.9.0",
