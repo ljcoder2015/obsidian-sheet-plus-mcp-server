@@ -18,13 +18,27 @@ const ObsidianSheetPlusSetRangeStyleInputSchema = z.object({
     fontColor: z.string().optional().describe("The font color (hex format)"),
     fontSize: z.number().optional().describe("The font size"),
     fontFamily: z.string().optional().describe("The font family"),
-    bold: z.boolean().optional().describe("Whether to set bold text"),
-    fontLine: z.enum(["none","single", "double"]).optional().describe("The font line style"),
+    fontLine: z
+      .enum(["none", "single", "double", "underline", "line-through", "strikethrough"])
+      .optional()
+      .describe(
+        "The font line style. 'single'/'double'/'underline' set an underline, " +
+          "'line-through'/'strikethrough' set a strikethrough, 'none' clears both",
+      ),
     fontWeight: z.enum(["normal", "bold"]).optional().describe("The font weight"),
     fontStyle: z.enum(["normal", "italic"]).optional().describe("The font style"),
-    textDecoration: z.enum(["none", "underline", "line-through"]).optional().describe("The text decoration"),
-    horizontalAlignment: z.enum(["left", "center", "right"]).optional().describe("Horizontal alignment"),
-    verticalAlignment: z.enum(["top", "center", "bottom"]).optional().describe("Vertical alignment"),
+    textDecoration: z
+      .enum(["none", "underline", "line-through"])
+      .optional()
+      .describe("The text decoration (underline / line-through); same effect as fontLine"),
+    horizontalAlignment: z
+      .enum(["left", "center", "right"])
+      .optional()
+      .describe("Horizontal alignment; unsupported values now return an error instead of failing silently"),
+    verticalAlignment: z
+      .enum(["top", "center", "bottom"])
+      .optional()
+      .describe("Vertical alignment ('center' is stored as middle); unsupported values return an error"),
     textRotation: z.number().optional().describe("The text rotation angle"),
     wrap: z.boolean().optional().describe("The wrap strategy"),
     border: z.object({
@@ -41,7 +55,8 @@ export async function registerObsidianSheetPlusSetRangeStyleTool(
   obsidianSheetPlusService: any,
 ): Promise<void> {
   const toolName = "set_range_style";
-  const toolDescription = "Sets style for a range of cells";
+  const toolDescription =
+    "Sets style for a range of cells (colors, font, alignment, wrap, rotation, borders). Unsupported parameter values return an error instead of failing silently";
 
   const registrationContext = requestContextService.createRequestContext({
     operation: "RegisterObsidianSheetPlusSetRangeStyleTool",

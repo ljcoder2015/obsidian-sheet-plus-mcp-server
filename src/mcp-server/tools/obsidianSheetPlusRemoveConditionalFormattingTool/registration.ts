@@ -20,7 +20,8 @@ export async function registerObsidianSheetPlusRemoveConditionalFormattingTool(
   obsidianSheetPlusService: any,
 ): Promise<void> {
   const toolName = "remove_conditional_formatting";
-  const toolDescription = "Remove conditional formatting rules from a range";
+  const toolDescription =
+    "Removes every conditional formatting rule whose range intersects the given range (the range may be a superset of the rules' ranges); returns rulesRemoved";
 
   const registrationContext = requestContextService.createRequestContext({
     operation: "RegisterObsidianSheetPlusRemoveConditionalFormattingTool",

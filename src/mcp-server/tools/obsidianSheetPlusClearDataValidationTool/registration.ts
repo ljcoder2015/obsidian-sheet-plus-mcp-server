@@ -20,7 +20,8 @@ export async function registerObsidianSheetPlusClearDataValidationTool(
   obsidianSheetPlusService: any,
 ): Promise<void> {
   const toolName = "clear_data_validation";
-  const toolDescription = "Clears data validation for a range of cells";
+  const toolDescription =
+    "Clears every data validation rule whose range intersects the given range in a single call (the range may be a superset of the rules' ranges); returns rulesRemoved";
 
   const registrationContext = requestContextService.createRequestContext({
     operation: "RegisterObsidianSheetPlusClearDataValidationTool",

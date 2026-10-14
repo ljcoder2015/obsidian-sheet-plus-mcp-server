@@ -13,7 +13,16 @@ import { setFormula } from "./logic.js";
 const ObsidianSheetPlusSetFormulaInputSchema = z.object({
   sheetName: z.string().optional().describe("The name of the sheet"),
   range: z.string().describe("The range of cells to set the formula, e.g. 'A1:B2'"),
-  formula: z.string().describe("The formula to set"),
+  formula: z.string().describe("The formula to set, e.g. '=SUM(B1:B10)'"),
+  fillMode: z
+    .enum(["relative", "same"])
+    .optional()
+    .describe(
+      "How the formula is applied when the range has multiple cells. " +
+        "'relative' (default) shifts relative references per cell like Excel fill " +
+        "(=B1*2 over A1:A3 yields =B1*2, =B2*2, =B3*2); $-locked parts are not shifted. " +
+        "'same' copies the formula verbatim into every cell.",
+    ),
 });
 
 export async function registerObsidianSheetPlusSetFormulaTool(
@@ -21,7 +30,8 @@ export async function registerObsidianSheetPlusSetFormulaTool(
   obsidianSheetPlusService: any,
 ): Promise<void> {
   const toolName = "set_formula";
-  const toolDescription = "Sets a formula in a specific cell or range";
+  const toolDescription =
+    "Sets a formula in a specific cell or range. For multi-cell ranges relative references are shifted per cell (Excel fill semantics) unless fillMode='same'";
 
   const registrationContext = requestContextService.createRequestContext({
     operation: "RegisterObsidianSheetPlusSetFormulaTool",

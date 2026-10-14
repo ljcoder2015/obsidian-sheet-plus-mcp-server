@@ -81,6 +81,13 @@ export interface SetFormulaParams {
   sheetName?: string;
   range: string;
   formula: string;
+  /**
+   * How the formula is applied when the range has multiple cells:
+   * - "relative" (default): shift relative references per cell, like Excel fill
+   *   (set_formula("A1:A3", "=B1*2") yields =B1*2, =B2*2, =B3*2).
+   * - "same": copy the formula verbatim into every cell.
+   */
+  fillMode?: "relative" | "same";
 }
 
 /**
